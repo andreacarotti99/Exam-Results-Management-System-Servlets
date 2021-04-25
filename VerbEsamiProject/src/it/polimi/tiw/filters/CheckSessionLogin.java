@@ -41,7 +41,7 @@ public class CheckSessionLogin implements Filter {
 		
 		HttpServletRequest req = (HttpServletRequest) request;
 		HttpServletResponse res = (HttpServletResponse) response;
-		String loginpath = req.getServletContext().getContextPath() + "/index.html";
+		String loginpath = req.getServletContext().getContextPath() + "/HomePage";
 		
 		//check if session is new or if user hasn't logged
 		HttpSession s = req.getSession();

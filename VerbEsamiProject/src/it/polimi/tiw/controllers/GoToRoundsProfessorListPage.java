@@ -46,8 +46,12 @@ public class GoToRoundsProfessorListPage extends HttpServlet {
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		//this header is to prevent the browser caching the page during logout phase
+		response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+		
 		// If the user is not logged in (not present in session) redirect to the login
-		String loginpath = getServletContext().getContextPath() + "/index.html";
+		//String loginpath = getServletContext().getContextPath() + "/index.html";
 		HttpSession session = request.getSession();
 		
 		//se arrivo alla pagina CoursesListPage in modi "diversi" e quindi la sessione è nuova oppure se nel db non si è trovato l'utente

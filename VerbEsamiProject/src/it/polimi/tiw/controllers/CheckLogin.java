@@ -4,12 +4,14 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.thymeleaf.TemplateEngine;
@@ -47,6 +49,10 @@ public class CheckLogin extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		
+		//this header is to prevent the browser caching the page during logout phase
+		response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+				
 		//obtain and escape params
 		String usrn = null;
 		String pwd = null;
@@ -88,13 +94,14 @@ public class CheckLogin extends HttpServlet {
 		String path;
 		//if in the db we didn't find the user --> the user is null so we show a message saying incorrect values in the form
 		if (user == null) {
-			ServletContext servletContext = getServletContext();
-			final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
-			ctx.setVariable("errorMsg", "Incorrect username or password");
-			path = "/index.html";
 			
-			//the template engine will process the provided string and context (with the errorMsg) and will dislplay the error of incorrect username
-			templateEngine.process(path, ctx, response.getWriter());
+			HttpSession session = request.getSession();
+			session.setAttribute("errorMessage", "Incorrect username or password");
+			
+			path = getServletContext().getContextPath() + "/HomePage";
+			response.sendRedirect(path);
+			
+			
 		} else {
 			//if in the db we actually found some user with the right credentials --> we "put" in the session the user Bean from the db and the attribute we 
 			//decided to use to get it in future is "user"

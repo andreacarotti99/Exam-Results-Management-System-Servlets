@@ -46,6 +46,8 @@ public class GoToClassesStudentListPage extends HttpServlet {
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		//this header is to prevent the browser caching the page during logout phase
+		response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
 		
 		HttpSession session = request.getSession();
 		
