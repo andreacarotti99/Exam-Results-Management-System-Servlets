@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<meta charset="ISO-8859-1">
+<title>List of rounds Page</title>
+</head>
+
+
+<body>
+
+	
+	<h1>Welcome to the List of Rounds Page</h1>
+	<p th:text="${'Hello ' + session.user.name + ' ' + session.user.surname + ', you are a professor, here you can see the list of rounds'}"></p>
+	<p> List of rounds in descending order: </p>
+
+	<table>
+		<thead>
+			<tr>
+				<th>Dates of the round</th>
+				<!-- <th> Date </th> -->
+				<!-- <th> Link </th> -->
+			</tr>
+		</thead>
+		<tbody>
+			<tr th:each="r : ${rounds}">
+				<td th:text="${r.date}"></td>
+				
+				<!--  <td th:text="${c.professorID}"></td></td>  -->
+				<!--     <td><a th:href="@{/GetMissionDetails(missionid=${m.id})}">Details</a></td>     -->
+				
+				
+			</tr>
+		</tbody>
+	</table>
+	
+</body>
+</html>
