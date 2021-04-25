@@ -46,6 +46,7 @@ public class CheckSessionLogin implements Filter {
 		//check if session is new or if user hasn't logged
 		HttpSession s = req.getSession();
 		if (s.isNew() || s.getAttribute("user") == null) {
+			s.setAttribute("errorMessage", "you aren't logged in, please log in again");
 			res.sendRedirect(loginpath);
 			return;
 		}

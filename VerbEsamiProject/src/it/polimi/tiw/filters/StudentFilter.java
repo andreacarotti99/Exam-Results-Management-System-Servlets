@@ -52,6 +52,7 @@ public class StudentFilter implements Filter {
 		u = (User) s.getAttribute("user");
 		//check id user in the session is a student
 		if (u.getIsProfessor()) {
+			s.setAttribute("errorMessage", "you filthy hacker, you are not a student, we logged you off for security reasons");
 			res.sendRedirect(loginpath);
 			return;
 		}
