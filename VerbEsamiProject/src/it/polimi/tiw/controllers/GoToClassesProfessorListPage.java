@@ -63,7 +63,7 @@ public class GoToClassesProfessorListPage extends HttpServlet {
 		}
 
 		// Redirect to the Courses List page and add missions to the parameters
-		String path = "/WEB-INF/ClassesProfessorListPage.html";
+		String path = "/WEB-INF/prof/ClassesProfessorListPage.html";
 		ServletContext servletContext = getServletContext();
 		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
 		ctx.setVariable("classes", classes);
