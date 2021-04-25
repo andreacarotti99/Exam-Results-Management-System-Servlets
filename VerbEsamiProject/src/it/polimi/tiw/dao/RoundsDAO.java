@@ -67,9 +67,42 @@ public class RoundsDAO {
 		}
 	}
 	
+	public boolean isClassAttendedByStudent(int studentId, int classId) throws SQLException {
+		int output;
+		
+		String query = "SELECT count(*) FROM attend WHERE idstudent = ? AND idclass = ?";
+		
+		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
+			pstatement.setInt(1, studentId);
+			pstatement.setInt(2, classId);
+			
+			try (ResultSet result = pstatement.executeQuery();) {
+				result.next();
+				output = result.getInt("count(*)");
+			}
+		}
+		
+		if (output == 1) return true;
+		else return false;
+	}
 	
-
-	
+	public boolean doesClassExists(int classId)throws SQLException {
+		int output;
+		
+		String query = "SELECT count(*) FROM class WHERE idclass = ?";
+		
+		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
+			pstatement.setInt(1, classId);
+			
+			try (ResultSet result = pstatement.executeQuery();) {
+				result.next();
+				output = result.getInt("count(*)");
+			}
+		}
+		
+		if (output == 1) return true;
+		else return false;
+	}
 	
 
 	

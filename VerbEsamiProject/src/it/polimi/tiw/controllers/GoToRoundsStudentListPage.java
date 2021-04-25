@@ -67,6 +67,8 @@ public class GoToRoundsStudentListPage extends HttpServlet {
 		User user = (User) session.getAttribute("user");
 		RoundsDAO roundsDAO = new RoundsDAO(connection);
 		List<Round> rounds = new ArrayList<Round>();
+		boolean isAttendedByStudent;
+		boolean classExists;
 		
 		
 		// getting from the request the id of the clicked class from the list of classes
@@ -82,10 +84,31 @@ public class GoToRoundsStudentListPage extends HttpServlet {
 		
 
 		try {
+			//checks if the user hasn't tried to hack
+			isAttendedByStudent = roundsDAO.isClassAttendedByStudent(user.getId(), classid);
+			classExists = roundsDAO.doesClassExists(classid);
+			
 			rounds = roundsDAO.findRoundsByStudentAndClass(user.getId(), classid);
 		} catch (SQLException e) {
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Not possible to recover rounds");
 			return;
+		}
+		
+		//checks if the user hasn't tried to hack
+		if (isAttendedByStudent == false) {
+			String path;
+			if (classExists == false) {
+				session.setAttribute("errorMessage", "stop hacking, the classid you insered doesn't exist");
+				
+				path = getServletContext().getContextPath() + "/HomePage";
+				response.sendRedirect(path);
+			}
+			else {
+				session.setAttribute("errorMessage", "stop hacking, you aren't attending this class");
+				
+				path = getServletContext().getContextPath() + "/HomePage";
+				response.sendRedirect(path);
+			}
 		}
 
 		// Redirect to the Courses List page and add missions to the parameters
