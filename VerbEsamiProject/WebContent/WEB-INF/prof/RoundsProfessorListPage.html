@@ -26,9 +26,7 @@
 		<tbody>
 			<tr th:each="r : ${rounds}">
 				<td th:text="${r.date}"></td>
-				
-				<!--  <td th:text="${c.professorID}"></td></td>  -->
-				<!--     <td><a th:href="@{/GetMissionDetails(missionid=${m.id})}">Details</a></td>     -->
+				<td> <a th:href="@{/GoToRegisteredToRoundPage(roundid=${r.roundID})}"> Round Details </a> </td>
 				
 				
 			</tr>
