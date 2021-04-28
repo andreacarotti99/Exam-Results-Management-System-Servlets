@@ -7,6 +7,7 @@ public class Round {
 	private int roundID;
 	private Date date;
 	private int classID;
+	private String className;
 	private int professorID;
 	private int studentID;
 	
@@ -30,6 +31,10 @@ public class Round {
 		return this.classID;
 	}
 	
+	public String getClassName() {
+		return this.className;
+	}
+	
 	public void setStudentID(int studentID) {
 		this.studentID = studentID;
 	}
@@ -40,6 +45,10 @@ public class Round {
 	
 	public void setClassID (int classID) {
 		this.classID = classID;
+	}
+	
+	public void setClassName (String className) {
+		this.className = className;
 	}
 	
 	public void setDate(Date date) {

@@ -12,9 +12,8 @@
 	<a href="http://localhost:8080/VerbEsamiProject/HomePage">logout</a>
 	
 	<h1>Welcome to the List of Rounds Page</h1>
-	<p th:text="${'Hello ' + session.user.name + ' ' + session.user.surname + ', you are a professor, here you can see the list of rounds'}"></p>
-	<p> List of rounds in descending order: </p>
-
+	<p th:text="${'Hello ' + session.user.name + ' ' + session.user.surname + ', you are a professor'}"></p>
+	<p th:text="'List of rounds in descending order for class: ' + (${rounds.size()>0} ? ${rounds[0].className})"></p>
 	<table>
 		<thead>
 			<tr>
