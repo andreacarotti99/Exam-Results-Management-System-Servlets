@@ -34,6 +34,7 @@ public class RoundsDAO {
 					round.setDate(result.getDate("date"));
 					round.setClassID(result.getInt("idclass"));
 					round.setProfessorID(result.getInt("idprofessor"));
+					round.setClassName(result.getString("classname"));
 					rounds.add(round);
 				}
 			}
@@ -46,7 +47,7 @@ public class RoundsDAO {
 	public List<Round> findRoundsByStudentAndClass(int studentId, int classId) throws SQLException {
 		List<Round> rounds = new ArrayList<Round>();
 		
-		String query = "SELECT idstudent, a.idclass, idround, date from attend a join round r on (a.idclass = r.idclass) where idstudent = ? and a.idclass = ? order by date desc";
+		String query = "SELECT idstudent, a.idclass, idround, date, c.classname from (attend a join round r on (a.idclass = r.idclass)) join class c on (a.idclass = c.idclass) where idstudent = ? and a.idclass = ? order by date desc";
 		
 		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
 			pstatement.setInt(1, studentId);
@@ -58,8 +59,9 @@ public class RoundsDAO {
 					Round round = new Round();
 					round.setRoundID(result.getInt("idround"));
 					round.setDate(result.getDate("date"));
-					round.setClassID(result.getInt("idclass"));
+					round.setClassID(result.getInt("a.idclass"));
 					round.setStudentID(result.getInt("idstudent"));
+					round.setClassName(result.getString("c.classname"));
 					rounds.add(round);
 				}
 			}

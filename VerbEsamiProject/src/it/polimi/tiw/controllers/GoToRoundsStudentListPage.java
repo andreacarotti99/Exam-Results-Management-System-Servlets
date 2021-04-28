@@ -67,8 +67,8 @@ public class GoToRoundsStudentListPage extends HttpServlet {
 		User user = (User) session.getAttribute("user");
 		RoundsDAO roundsDAO = new RoundsDAO(connection);
 		List<Round> rounds = new ArrayList<Round>();
-		boolean isAttendedByStudent;
-		boolean classExists;
+		boolean isAttendedByStudent = false;
+		boolean classExists = false;
 		
 		
 		// getting from the request the id of the clicked class from the list of classes
