@@ -84,8 +84,12 @@ public class GoToRoundsStudentListPage extends HttpServlet {
 		
 
 		try {
-			//checks if the user hasn't tried to hack
+			//checks if the user hasn't tried to hack so for example isattendedbystudent is false when the 
+			//query doesn't have any student in it (if I edit the HTML file or through the URL I make a request for a class and the user
+			//associated doesn't attend any class with that id)
 			isAttendedByStudent = roundsDAO.isClassAttendedByStudent(user.getId(), classid);
+			
+			//check if the provided class is in the db (is false when requesting a class not in the db)
 			classExists = roundsDAO.doesClassExists(classid);
 			
 			rounds = roundsDAO.findRoundsByStudentAndClass(user.getId(), classid);
@@ -104,6 +108,7 @@ public class GoToRoundsStudentListPage extends HttpServlet {
 				response.sendRedirect(path);
 			}
 			else {
+				//this is the case where there is a class with the provided id (in the html or URL and the user doesn't attend this class)
 				session.setAttribute("errorMessage", "stop hacking, you aren't attending this class");
 				
 				path = getServletContext().getContextPath() + "/HomePage";

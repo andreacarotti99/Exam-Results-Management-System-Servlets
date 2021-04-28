@@ -68,7 +68,8 @@ public class GoToRoundsProfessorListPage extends HttpServlet {
 		User user = (User) session.getAttribute("user");
 		RoundsDAO roundsDAO = new RoundsDAO(connection);
 		List<Round> rounds = new ArrayList<Round>();
-		
+		boolean isTaughtByProfessor;
+		boolean classExists;
 		
 		// getting from the request the id of the clicked class from the list of classes
 		// that we passed as a parameter to the servlet in the html page ... @{/GetMissionDetails(classid=${c.classID})}
@@ -83,11 +84,38 @@ public class GoToRoundsProfessorListPage extends HttpServlet {
 		
 
 		try {
+			//get the classid from the request and the userid from the session
+			isTaughtByProfessor = roundsDAO.isClassTaughtByProfessor(user.getId(), classid);
+			classExists = roundsDAO.doesClassExists(classid);
+
+			//extracting the list of rounds of the professor
 			rounds = roundsDAO.findRoundsByProfessorAndClass(user.getId(), classid);
 		} catch (SQLException e) {
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Not possible to recover rounds");
 			return;
 		}
+		
+		
+		//without this check we would have an empty list or a list of rounds but not of the right professor
+		if (isTaughtByProfessor == false) {
+			String path;
+			if (classExists == false) {
+				session.setAttribute("errorMessage", "stop hacking, the classid you insered doesn't exist");
+				
+				path = getServletContext().getContextPath() + "/HomePage";
+				response.sendRedirect(path);
+			}
+			else {
+				//this is the case where there is a class with the provided id (in the html or URL and the user doesn't attend this class)
+				session.setAttribute("errorMessage", "stop hacking, you don't teach this class");
+				
+				path = getServletContext().getContextPath() + "/HomePage";
+				response.sendRedirect(path);
+			}
+		}
+		
+		
+		
 
 		// Redirect to the Courses List page and add missions to the parameters
 		String path = "/WEB-INF/prof/RoundsProfessorListPage.html";
