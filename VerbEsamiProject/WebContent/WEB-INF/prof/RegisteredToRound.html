@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<meta charset="ISO-8859-1">
+<title>List of Registered Students Page</title>
+</head>
+
+
+<body>
+
+	<a href="http://localhost:8080/VerbEsamiProject/HomePage">logout</a>
+	
+	<h1>Welcome to the List of Registered students of the round </h1>
+	<p th:text="${'Hello ' + session.user.name + ' ' + session.user.surname + ', you are a professor, here you can see the list of registered students of the selected round'}"></p>
+	<p> List of students: </p>
+
+	<table>
+		<thead>
+			<tr>
+				<th>studentNumber</th>
+				<th>Surname</th>
+				<th>Name</th>
+				<th>Email</th>
+				<th>Degree Course</th>
+				<th>Mark</th>
+				<th>Status</th>
+
+			</tr>
+		</thead>
+		<tbody>
+			<tr th:each="r : ${registeredStudents}">
+				<td th:text="${r.studentNumber}"></td>
+				<td th:text="${r.surname}"></td>
+				<td th:text="${r.name}"></td>
+				<td th:text="${r.mail}"></td>
+				<td th:text="${r.degreeCourse}"></td>
+				<td th:text="${r.mark}"></td>
+				<td th:text="${r.status}"></td>
+
+				
+				<!--  <td><a th:href="@{/GetMissionDetails(missionid=${m.id})}">Edit</a></td> -->
+				
+				
+			</tr>
+		</tbody>
+	</table>
+	
+</body>
+</html>
