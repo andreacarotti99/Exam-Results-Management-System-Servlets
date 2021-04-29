@@ -14,6 +14,7 @@
 	<h1>Welcome to the List of Rounds Page</h1>
 	<p th:text="${'Hello ' + session.user.name + ' ' + session.user.surname + ', you are a professor'}"></p>
 	<p th:text="'List of rounds in descending order for class: ' + (${rounds.size()>0} ? ${rounds[0].className})"></p>
+	
 	<table>
 		<thead>
 			<tr>

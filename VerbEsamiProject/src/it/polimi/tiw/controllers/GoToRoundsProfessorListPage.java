@@ -100,9 +100,11 @@ public class GoToRoundsProfessorListPage extends HttpServlet {
 		if (isTaughtByProfessor == false) {
 			String path;
 			if (classExists == false) {
+				
 				session.setAttribute("errorMessage", "stop hacking, the classid you insered doesn't exist");
 				
 				path = getServletContext().getContextPath() + "/HomePage";
+				
 				response.sendRedirect(path);
 			}
 			else {
@@ -115,8 +117,6 @@ public class GoToRoundsProfessorListPage extends HttpServlet {
 		}
 		
 		
-		
-
 		// Redirect to the Courses List page and add missions to the parameters
 		String path = "/WEB-INF/prof/RoundsProfessorListPage.html";
 		ServletContext servletContext = getServletContext();

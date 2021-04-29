@@ -35,6 +35,7 @@ public class RegisteredStudentsDAO {
 					registeredStudent.setDegreeCourse(result.getString("s.degreecourse"));
 					registeredStudent.setMark(result.getInt("r.mark"));
 					registeredStudent.setStatus(result.getInt("r.state"));
+					registeredStudent.setId(result.getInt("r.idstudent"));
 					registeredStudents.add(registeredStudent);
 
 				}
@@ -42,5 +43,39 @@ public class RegisteredStudentsDAO {
 		return registeredStudents;	
 		}
 	}
+	
+	
+	//it is supposed to extract a list of only one element
+	public List<RegisteredStudent> findInfoStudentByRoundIDAndStudentID(int professorId, int roundId, int studentId) throws SQLException {
+		List<RegisteredStudent> registeredStudents = new ArrayList<RegisteredStudent>();
+		
+		String query = "select r.idstudent, r.mark, r.idround, r.state, u.name, u.surname, u.email, s.studentnumber, s.degreecourse from (registered r left join user u on r.idstudent = u.id) join studentinfo s on s.id = u.id where r.idround = ? and r.idstudent = ?";
+		
+		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
+			pstatement.setInt(1, roundId);
+			pstatement.setInt(2, studentId);
+			try (ResultSet result = pstatement.executeQuery();) {
+				while (result.next()) {
+					
+					RegisteredStudent registeredStudent = new RegisteredStudent();
+					registeredStudent.setId(result.getInt("r.idstudent"));
+					registeredStudent.setStudentNumber(result.getInt("s.studentnumber"));
+					registeredStudent.setSurname(result.getString("u.surname"));
+					registeredStudent.setName(result.getString("u.name"));
+					registeredStudent.setMail(result.getString("u.email"));
+					registeredStudent.setDegreeCourse(result.getString("s.degreecourse"));
+					registeredStudent.setMark(result.getInt("r.mark"));
+					registeredStudent.setStatus(result.getInt("r.state"));
+					registeredStudents.add(registeredStudent);
+
+				}
+			}
+		return registeredStudents;	
+		}
+	}
+	
+
+	
+	
 	
 }
