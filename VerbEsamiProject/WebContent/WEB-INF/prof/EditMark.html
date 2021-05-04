@@ -25,15 +25,15 @@
 	<hr>
 	
 	
-	<div>
+	<div th:if="${infostudent[0].status.getValue == 0}">	
+	
+		<div>
 		<p>Complete the form to Edit the Mark</p>
 		<form th:action="@{/EditMark}" method="POST">
 			<fieldset>
 				
 				<p>
-					
-					New Mark: <input type="number" name="newMark" min=18 max=30 required />
-					
+					New Mark: <input type="number" name="newMark" min=18 max=30 required />		
 				</p>
 				
 				<input type="submit" name="Submit Mark">
@@ -41,6 +41,7 @@
 		</form>
 	</div>
 	
+	</div>
 	
 	
 </body>

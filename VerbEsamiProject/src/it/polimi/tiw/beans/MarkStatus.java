@@ -2,8 +2,8 @@ package it.polimi.tiw.beans;
 
 //Enum: https://docs.oracle.com/javase/tutorial/java/javaOO/enum.html
 public enum MarkStatus {
-	INSERITO(0),
-	NONINSERITO(1),
+	NONINSERITO(0),
+	INSERITO(1),
 	PUBBLICATO(2),
 	RIFIUTATO(3),
 	VERBALIZZATO(4);
