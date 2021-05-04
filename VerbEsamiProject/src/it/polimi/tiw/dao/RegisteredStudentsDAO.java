@@ -67,15 +67,11 @@ public class RegisteredStudentsDAO {
 					registeredStudent.setMark(result.getInt("r.mark"));
 					registeredStudent.setStatus(result.getInt("r.state"));
 					registeredStudents.add(registeredStudent);
-
+					
 				}
 			}
 		return registeredStudents;	
 		}
 	}
-	
-
-	
-	
 	
 }

@@ -1,5 +1,7 @@
 package it.polimi.tiw.beans;
 
+import it.polimi.tiw.beans.MarkStatus;
+
 public class RegisteredStudent {
     private int id;
     private String username;
@@ -9,7 +11,7 @@ public class RegisteredStudent {
     private Integer studentNumber;
     private String degreeCourse;
     private Integer mark;
-    private Integer status;
+    private MarkStatus status;
 
     public int getId() {
         return id;
@@ -18,7 +20,7 @@ public class RegisteredStudent {
     public String getUsername() {
         return username;
     }
-
+ 
     public String getName() {
         return name;
     }
@@ -43,7 +45,7 @@ public class RegisteredStudent {
         return mark;
     }
 
-    public Integer getStatus() {
+    public MarkStatus getStatus() {
         return status;
     }
 
@@ -80,7 +82,7 @@ public class RegisteredStudent {
     }
 
     public void setStatus(Integer status) {
-        this.status = status;
+		this.status = MarkStatus.getMarkStatusFromInt(status);
     }
 }
 

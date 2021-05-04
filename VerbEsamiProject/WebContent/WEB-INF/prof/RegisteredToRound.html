@@ -13,6 +13,9 @@
 	
 	<h1>Welcome to the List of Registered students of the round </h1>
 	<p th:text="${'Hello ' + session.user.name + ' ' + session.user.surname + ', you are a professor, here you can see the list of registered students of the selected round'}"></p>
+	
+	<td> <a th:href="@{/PublishMarks}"> <button type="button"> Publish Marks </button> </a> </td>		
+	
 	<p> List of students: </p>
 
 	<table>
@@ -43,6 +46,9 @@
 			</tr>
 		</tbody>
 	</table>
+	
+	
+	
 	
 </body>
 </html>

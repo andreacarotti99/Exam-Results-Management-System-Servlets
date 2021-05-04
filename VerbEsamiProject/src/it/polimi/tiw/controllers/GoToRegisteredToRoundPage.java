@@ -65,10 +65,8 @@ public class GoToRegisteredToRoundPage extends HttpServlet {
 
 		User user = (User) session.getAttribute("user");
 		
-		
-		RegisteredStudentsDAO registeredStudentsDAO = new RegisteredStudentsDAO(connection);
-		
-		
+		RegisteredStudentsDAO registeredStudentsDAO = new RegisteredStudentsDAO(connection);	
+	
 		List<RegisteredStudent> registeredStudents = new ArrayList<RegisteredStudent>();
 		
 		Integer roundid = null;
@@ -76,14 +74,14 @@ public class GoToRegisteredToRoundPage extends HttpServlet {
 		try {
 			roundid = Integer.parseInt(request.getParameter("roundid"));
 			session.setAttribute("roundid", roundid);
-			System.out.println(roundid);
+			System.out.println("RoundID: " + roundid);
 
 		} catch(NumberFormatException | NullPointerException e) {
 			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Incorrect param values");
 			return;
 		}
 		
-		
+ 		
 		try {
 			//get the classid from the request and the userid from the session
 			//isTaughtByProfessor = roundsDAO.isClassTaughtByProfessor(user.getId(), classid);

@@ -69,7 +69,8 @@ public class GoToEditMarkPage extends HttpServlet {
 		User user = (User) session.getAttribute("user");
 		
 		int roundid = (int) session.getAttribute("roundid");
-				
+		
+		
 		RegisteredStudentsDAO registeredStudentsDAO = new RegisteredStudentsDAO(connection);
 		
 		List<RegisteredStudent> infoStudent = new ArrayList<RegisteredStudent>();
@@ -80,7 +81,7 @@ public class GoToEditMarkPage extends HttpServlet {
 			//getting studentid from the session
 			studentid = Integer.parseInt(request.getParameter("studentid"));
 			//System.out.println(studentid);
-			
+			request.getSession().setAttribute("selectedstudent", studentid);
 			
 			
 		} catch(NumberFormatException | NullPointerException e) {
@@ -91,10 +92,8 @@ public class GoToEditMarkPage extends HttpServlet {
 		
 		try {
 			//extracting info about the clicked student (attending that round) 
+			
 			infoStudent = registeredStudentsDAO.findInfoStudentByRoundIDAndStudentID(user.getId(), roundid, studentid);
-			//System.out.println(infoStudent[0].getId);
-
-
 			
 			
 		} catch (SQLException e) {

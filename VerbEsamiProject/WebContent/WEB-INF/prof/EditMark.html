@@ -24,5 +24,24 @@
 	<p th:text="'Status: ' + (${infostudent.size()>0} ? ${infostudent[0].status})"></p>
 	<hr>
 	
+	
+	<div>
+		<p>Complete the form to Edit the Mark</p>
+		<form th:action="@{/EditMark}" method="POST">
+			<fieldset>
+				
+				<p>
+					
+					New Mark: <input type="number" name="newMark" min=18 max=30 required />
+					
+				</p>
+				
+				<input type="submit" name="Submit Mark">
+			</fieldset>
+		</form>
+	</div>
+	
+	
+	
 </body>
 </html>
