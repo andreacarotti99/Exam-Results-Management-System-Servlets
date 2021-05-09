@@ -67,7 +67,7 @@ public class VerbalizationDAO {
 	
 	
 	//2
-	public int getTuplaGivenIdRoundAndTimestamp(Integer idround, Timestamp date) throws SQLException {
+	public int getTuplaGivenIdRoundAndTimestamp(Integer idround) throws SQLException {
 		int verbalid = 0;
 		String query2 = "SELECT * FROM verbal WHERE idround = ? ORDER BY idverbal DESC"; 
 		//così scorriamo tutte le tuple fino all'ultima e la salviamo
@@ -75,7 +75,6 @@ public class VerbalizationDAO {
 		try (PreparedStatement pstatement = con.prepareStatement(query2);) {
 			pstatement.setInt(1, idround);
 			
-			//pstatement.setTimestamp(2, date); AND dateverbal = ?
 		
 			try (ResultSet result = pstatement.executeQuery();) {
 				if (result.next()) {

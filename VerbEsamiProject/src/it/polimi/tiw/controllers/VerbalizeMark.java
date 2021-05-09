@@ -69,7 +69,7 @@ public class VerbalizeMark extends HttpServlet {
 		try {
 			System.out.println("creating verbal...");
 			Timestamp date = verbalizationDAO.createVerbalFromStatePubblicatoOrRifiutato(roundid);
-			Integer newVerbalId = verbalizationDAO.getTuplaGivenIdRoundAndTimestamp(roundid, date);
+			Integer newVerbalId = verbalizationDAO.getTuplaGivenIdRoundAndTimestamp(roundid);
 			verbalizationDAO.updateNewVerbalIdRegistered(roundid, newVerbalId);
 			verbalizationDAO.changeStatusToVerbalizzato(roundid);
 
@@ -80,11 +80,7 @@ public class VerbalizeMark extends HttpServlet {
 			return;
 		}
 			
-		
-		
-		
-		
-		
+
 		
 			
 		String ctxpath = getServletContext().getContextPath();

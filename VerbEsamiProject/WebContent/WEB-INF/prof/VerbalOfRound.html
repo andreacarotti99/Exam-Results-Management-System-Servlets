@@ -15,7 +15,9 @@
 	<p th:text="${'Hello ' + session.user.name + ' ' + session.user.surname + ', you are a professor, here you can see the verbal of the selected round'}"></p>
 	
 	
-	<p> Verbal: </p>
+	<h1>Verbal Number: </h1>
+	<h1 th:text="${verbal.verbalID}"></h1>
+	
 
 	<table>
 		<thead>

@@ -1,6 +1,7 @@
 package it.polimi.tiw.controllers;
 
 import java.io.IOException;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -21,9 +22,11 @@ import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 import it.polimi.tiw.beans.RegisteredStudent;
 import it.polimi.tiw.beans.User;
+import it.polimi.tiw.beans.Verbal;
 import it.polimi.tiw.dao.RegisteredStudentsDAO;
 
 import it.polimi.tiw.utils.ConnectionHandler;
+import it.polimi.tiw.dao.VerbalizationDAO;
 
 /**
  * Servlet implementation class GoToRegisteredToRoundPage
@@ -65,11 +68,16 @@ public class GoToVerbalPage extends HttpServlet {
 
 		User user = (User) session.getAttribute("user");
 		
+		//we need the verbalizationDAO to set in the context the verbalid and to print it on the html VerbalOfRound
 		RegisteredStudentsDAO registeredStudentsDAO = new RegisteredStudentsDAO(connection);	
 	
+		VerbalizationDAO verbalizationDAO = new VerbalizationDAO(connection, user.getId());
+		
 		List<RegisteredStudent> registeredStudents = new ArrayList<RegisteredStudent>();
 		
 		Integer roundid = null;
+		Integer newVerbalId = null;
+		Verbal verbal = new Verbal();
 		
 		try {
 			roundid = Integer.parseInt(request.getParameter("roundid"));
@@ -89,6 +97,12 @@ public class GoToVerbalPage extends HttpServlet {
 
 			//extracting the list of students registered to the given roundid (saved in the request)
 			registeredStudents = registeredStudentsDAO.findVerbalizedStudentsToRound(user.getId(), roundid);
+			
+			//executing again the query to get the newVerbalIdFrom the db
+			newVerbalId = verbalizationDAO.getTuplaGivenIdRoundAndTimestamp(roundid);
+			
+			verbal.setVerbalID(newVerbalId);
+			
 		} catch (SQLException e) {
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Not possible to recover list of students registered");
 			return;
@@ -101,6 +115,8 @@ public class GoToVerbalPage extends HttpServlet {
 		
 		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
 		ctx.setVariable("registeredStudents", registeredStudents);
+		ctx.setVariable("verbal", verbal);
+
 		templateEngine.process(path, ctx, response.getWriter());
 		
 		
