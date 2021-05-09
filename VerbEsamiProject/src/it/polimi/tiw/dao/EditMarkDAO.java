@@ -4,9 +4,17 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
 
 public class EditMarkDAO {
 	private Connection con;
@@ -47,7 +55,7 @@ public class EditMarkDAO {
 	
 	public void changeStatusToPubblicato(Integer idround) throws SQLException {		
 
-		String query = "UPDATE registered SET state = 2 where idround = ?";
+		String query = "UPDATE registered SET state = 2 where idround = ? and state = 1";
 		
 		try (PreparedStatement pstatement = con.prepareStatement(query);) {
 
@@ -56,8 +64,6 @@ public class EditMarkDAO {
 			pstatement.executeUpdate();
 		}
 	}
-	
-	
 	
 	
 }
