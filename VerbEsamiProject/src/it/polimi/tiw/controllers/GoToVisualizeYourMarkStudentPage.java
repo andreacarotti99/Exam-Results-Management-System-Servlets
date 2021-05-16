@@ -19,17 +19,20 @@ import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
+import it.polimi.tiw.beans.Classe;
 import it.polimi.tiw.beans.RegisteredStudent;
+import it.polimi.tiw.beans.Round;
 import it.polimi.tiw.beans.User;
-import it.polimi.tiw.dao.RegisteredStudentsDAO;
+import it.polimi.tiw.dao.ClassesDAO;
+import it.polimi.tiw.dao.YourMarkDAO;
 
 import it.polimi.tiw.utils.ConnectionHandler;
 
 /**
  * Servlet implementation class GoToRegisteredToRoundPage
  */
-@WebServlet("/GoToRegisteredToRoundPage")
-public class GoToRegisteredToRoundPage extends HttpServlet {
+@WebServlet("/GoToVisualizeYourMarkStudentPage")
+public class GoToVisualizeYourMarkStudentPage extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private TemplateEngine templateEngine;
 	private Connection connection = null;
@@ -37,7 +40,7 @@ public class GoToRegisteredToRoundPage extends HttpServlet {
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public GoToRegisteredToRoundPage() {
+    public GoToVisualizeYourMarkStudentPage() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -65,44 +68,53 @@ public class GoToRegisteredToRoundPage extends HttpServlet {
 
 		User user = (User) session.getAttribute("user");
 		
-		RegisteredStudentsDAO registeredStudentsDAO = new RegisteredStudentsDAO(connection);	
-	
-		List<RegisteredStudent> registeredStudents = new ArrayList<RegisteredStudent>();
+		//int roundid = (int) session.getAttribute("roundid");
+		int roundid = Integer.parseInt(request.getParameter("roundid"));
 		
-		Integer roundid = null;
+		
+		YourMarkDAO yourMarkDAO = new YourMarkDAO(connection);
+		List<RegisteredStudent> infoStudent = new ArrayList<RegisteredStudent>();
+		Integer studentid = null;
+		
 		
 		try {
-			roundid = Integer.parseInt(request.getParameter("roundid"));
-			session.setAttribute("roundid", roundid);
-			System.out.println("saved in the session the RoundID: " + roundid);
-
+			
+			//getting studentid from the session
+			studentid = user.getId();
+			
+			//System.out.println(studentid);
+			//request.getSession().setAttribute("selectedstudent", studentid);
+			
+			
 		} catch(NumberFormatException | NullPointerException e) {
 			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Incorrect param values");
 			return;
 		}
 		
- 		
+		
 		try {
-			//get the classid from the request and the userid from the session
-			//isTaughtByProfessor = roundsDAO.isClassTaughtByProfessor(user.getId(), classid);
-			//classExists = roundsDAO.doesClassExists(classid);
+			//extracting info about the clicked student (attending that round) 
+			
+			
+			System.out.println("roundid: " + roundid);
+			System.out.println("studentid: " + studentid);
 
-			//extracting the list of students registered to the given roundid (saved in the request)
-			registeredStudents = registeredStudentsDAO.findRegisteredStudentsToRound(user.getId(), roundid);
+			infoStudent = yourMarkDAO.findInfoMarkStudentByRoundIDAndStudentID(roundid, studentid);
+			
+			
 		} catch (SQLException e) {
-			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Not possible to recover list of students registered");
+			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Not possible to recover student information");
 			return;
 		}
 		
 		
-		String path = "/WEB-INF/prof/RegisteredToRound.html";
+		String path = "/WEB-INF/stud/YourMark.html";
 		
 		ServletContext servletContext = getServletContext();
 		
 		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
-		ctx.setVariable("registeredStudents", registeredStudents);
+		ctx.setVariable("infostudent", infoStudent);
 		templateEngine.process(path, ctx, response.getWriter());
-		
 		
 		
 	}
@@ -116,7 +128,3 @@ public class GoToRegisteredToRoundPage extends HttpServlet {
 
 	}
 }
-
-
-
-

@@ -12,6 +12,15 @@ public class RegisteredStudent {
     private String degreeCourse;
     private Integer mark;
     private MarkStatus status;
+    private Integer roundID;
+    
+    public int getRoundID(){
+    	return roundID;
+    }
+    
+    public void setRoundID(Integer roundID) {
+    	this.roundID = roundID;
+    }
 
     public int getId() {
         return id;
