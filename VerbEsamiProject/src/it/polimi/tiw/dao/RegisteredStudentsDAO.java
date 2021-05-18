@@ -103,7 +103,4 @@ public class RegisteredStudentsDAO {
 		return registeredStudents;	
 		}
 	}
-	
-	
-	
 }

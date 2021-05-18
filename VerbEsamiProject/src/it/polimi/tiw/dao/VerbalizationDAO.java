@@ -30,10 +30,10 @@ public class VerbalizationDAO {
 	}
 
 	/*
-	 * creo un verbale in verbal con id autoincrement e data con timestamp e idround quello passato come parametro
-	 * seleziono la tupla con quel timestamp e quell'idround da verbal
-	 * faccio update nella tabella registred con quell'id autoincrement in quelli che hanno stato 2 o 3
-	 * cambio lo stato di quelli che han stato 2 o 3 in 4
+	 * 1) creo un verbale in verbal con id autoincrement e data con timestamp e idround quello passato come parametro
+	 * 2) seleziono la tupla con quel timestamp e quell'idround da verbal
+	 * 3) faccio update nella tabella registred con quell'id autoincrement in quelli che hanno stato 2 o 3
+	 * 4) cambio lo stato di quelli che han stato 2 o 3 in 4
 	 */
 
 
@@ -81,7 +81,7 @@ public class VerbalizationDAO {
 					
 					verbalid = result.getInt("idverbal");
 					
-					System.out.println("verbalid: " + verbalid);
+					//System.out.println("verbalid: " + verbalid);
 
 					
 				}
@@ -99,7 +99,7 @@ public class VerbalizationDAO {
 		Verbal verbal = new Verbal();
 		Timestamp date = new Timestamp(new Date().getTime());
 		
-		System.out.println("First part: insert into db the new verbal and the timestamp...");
+		//System.out.println("First part: insert into db the new verbal and the timestamp...");
 		//PRIMA PARTE DELLA QUERY
 		
 		String query = "INSERT INTO verbal (dateverbal, idround) VALUE (?, ?)";
@@ -108,7 +108,7 @@ public class VerbalizationDAO {
 			pstatement.setTimestamp(1, date);
 			pstatement.setInt(2, idround);
 			pstatement.executeUpdate();
-			System.out.println("First part correct...");
+			//ystem.out.println("First part correct...");
 		}
 		
 		return date;
