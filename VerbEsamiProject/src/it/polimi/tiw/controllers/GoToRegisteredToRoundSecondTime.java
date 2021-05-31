@@ -92,18 +92,17 @@ public class GoToRegisteredToRoundSecondTime extends HttpServlet {
 			
 			System.out.println("Saved clicked column: "+ savedOrder.getClickedColumn());
 			
+			
 			savedOrder.checkLastClicked(lastClicked);
 			
-			
-
-			
-			
-			
+			/*
 			if (session.getAttribute("savedOrder") != null) {
 				session.removeAttribute("savedOrder");
 			}
+			
 			session.setAttribute("savedOrder", savedOrder);
 			
+			 */
 						
 			roundid = (Integer) session.getAttribute("roundid");
 			
