@@ -37,7 +37,15 @@
   	<url-pattern>/GoToClassesStudentListPage</url-pattern>
   	<url-pattern>/GoToRoundsProfessorListPage</url-pattern>
   	<url-pattern>/GoToRoundsStudentListPage</url-pattern>
-  	
+  	<url-pattern>/DiscardMark</url-pattern>
+  	<url-pattern>/EditMark</url-pattern>
+  	<url-pattern>/GoToEditMarkPage</url-pattern>
+  	<url-pattern>/GoToRegisteredToRoundPage</url-pattern>
+  	<url-pattern>/GoToRegisteredToRoundSecondTime</url-pattern>
+  	<url-pattern>/GoToVerbalPage</url-pattern>
+  	<url-pattern>/GoToVisualizeYourMarkStudentPage</url-pattern>
+  	<url-pattern>/PublishMarks</url-pattern>
+  	<url-pattern>/VerbalizeMarks</url-pattern>
   	<dispatcher>REQUEST</dispatcher>
   	<dispatcher>FORWARD</dispatcher>
   </filter-mapping>
@@ -46,6 +54,13 @@
   	<filter-name>ProfessorFilter</filter-name>
   	<url-pattern>/GoToClassesProfessorListPage</url-pattern>
   	<url-pattern>/GoToRoundsProfessorListPage</url-pattern>
+  	<url-pattern>/EditMark</url-pattern>
+  	<url-pattern>/GoToEditMarkPage</url-pattern>
+  	<url-pattern>/GoToRegisteredToRoundPage</url-pattern>
+  	<url-pattern>/GoToRegisteredToRoundSecondTime</url-pattern>
+  	<url-pattern>/GoToVerbalPage</url-pattern>
+  	<url-pattern>/PublishMarks</url-pattern>
+  	<url-pattern>/VerbalizeMarks</url-pattern>
   	<dispatcher>REQUEST</dispatcher>
   	<dispatcher>FORWARD</dispatcher>
   </filter-mapping>
@@ -54,6 +69,8 @@
   	<filter-name>StudentFilter</filter-name>
   	<url-pattern>/GoToClassesStudentListPage</url-pattern>
   	<url-pattern>/GoToRoundsStudentListPage</url-pattern>
+  	<url-pattern>/DiscardMark</url-pattern>
+  	<url-pattern>/GoToVisualizeYourMarkStudentPage</url-pattern>
   	<dispatcher>REQUEST</dispatcher>
   	<dispatcher>FORWARD</dispatcher>
   </filter-mapping>
