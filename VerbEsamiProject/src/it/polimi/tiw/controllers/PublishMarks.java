@@ -79,13 +79,13 @@ public class PublishMarks extends HttpServlet {
 		
 		int userid = u.getId();
 		
-		EditMarkDAO editMarkDAO = new EditMarkDAO(connection, userid);
+		EditMarkDAO editMarkDAO = new EditMarkDAO(connection);
 
 		try {
 			
 			System.out.println("Changing status in the database...");
 			
-			editMarkDAO.changeStatusToPubblicato(roundId);
+			editMarkDAO.changeStatusToPublished(roundId);
 			
 			
 		} catch (SQLException e) {

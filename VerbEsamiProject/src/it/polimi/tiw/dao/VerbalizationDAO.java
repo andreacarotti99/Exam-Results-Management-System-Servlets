@@ -22,11 +22,9 @@ import java.util.Date;
 
 public class VerbalizationDAO {
 	private Connection con;
-	private int id;
 
-	public VerbalizationDAO(Connection connection, int i) {
+	public VerbalizationDAO(Connection connection) {
 		this.con = connection;
-		this.id = i;
 	}
 
 	/*
@@ -94,7 +92,7 @@ public class VerbalizationDAO {
 	}
 
 
-	//1
+	//CHIEDEREEEEEE DATA SE SERVE
 	public Timestamp createVerbalFromStatePubblicatoOrRifiutato(Integer idround) throws SQLException {
 		Verbal verbal = new Verbal();
 		Timestamp date = new Timestamp(new Date().getTime());

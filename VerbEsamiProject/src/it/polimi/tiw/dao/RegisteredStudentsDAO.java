@@ -17,10 +17,10 @@ public class RegisteredStudentsDAO {
 	}
 
 	
-	public List<RegisteredStudent> findRegisteredStudentsToRound(int professorId, int roundId) throws SQLException {
+	public List<RegisteredStudent> getRegisteredStudentsOrdered(int roundId, String orderId, String orderDirection) throws SQLException {
 		List<RegisteredStudent> registeredStudents = new ArrayList<RegisteredStudent>();
 		
-		String query = "select r.idstudent, r.mark, r.idround, r.state, u.name, u.surname, u.email, s.studentnumber, s.degreecourse from (registered r left join user u on r.idstudent = u.id) join studentinfo s on s.id = u.id where idround = ?";
+		String query = "select r.idstudent, r.mark, r.idround, r.state, u.name, u.surname, u.email, s.studentnumber, s.degreecourse from (registered r left join user u on r.idstudent = u.id) join studentinfo s on s.id = u.id where idround = ? order by "+ orderId + " " + orderDirection;
 		
 		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
 			pstatement.setInt(1, roundId);
@@ -46,7 +46,7 @@ public class RegisteredStudentsDAO {
 	
 	
 	//it is supposed to extract a list of only one element
-	public List<RegisteredStudent> findInfoStudentByRoundIDAndStudentID(int professorId, int roundId, int studentId) throws SQLException {
+	public List<RegisteredStudent> findInfoStudentByRoundIDAndStudentID(int roundId, int studentId) throws SQLException {
 		List<RegisteredStudent> registeredStudents = new ArrayList<RegisteredStudent>();
 		
 		String query = "select r.idstudent, r.mark, r.idround, r.state, u.name, u.surname, u.email, s.studentnumber, s.degreecourse from (registered r left join user u on r.idstudent = u.id) join studentinfo s on s.id = u.id where r.idround = ? and r.idstudent = ?";
@@ -66,6 +66,7 @@ public class RegisteredStudentsDAO {
 					registeredStudent.setDegreeCourse(result.getString("s.degreecourse"));
 					registeredStudent.setMark(result.getInt("r.mark"));
 					registeredStudent.setStatus(result.getInt("r.state"));
+					registeredStudent.setRoundID(result.getInt("r.idround"));
 					registeredStudents.add(registeredStudent);
 					
 				}
@@ -77,7 +78,7 @@ public class RegisteredStudentsDAO {
 	
 	
 	
-	public List<RegisteredStudent> findVerbalizedStudentsToRound(int professorId, int roundId) throws SQLException {
+	public List<RegisteredStudent> findVerbalizedStudentsToRound(int roundId) throws SQLException {
 		List<RegisteredStudent> registeredStudents = new ArrayList<RegisteredStudent>();
 		
 		String query = "select r.idstudent, r.mark, r.idround, r.state, u.name, u.surname, u.email, s.studentnumber, s.degreecourse from (registered r left join user u on r.idstudent = u.id) join studentinfo s on s.id = u.id where idround = ? and state = 4";

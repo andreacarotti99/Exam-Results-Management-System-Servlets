@@ -18,11 +18,9 @@ import java.util.Date;
 
 public class EditMarkDAO {
 	private Connection con;
-	private int id;
 
-	public EditMarkDAO(Connection connection, int i) {
+	public EditMarkDAO(Connection connection) {
 		this.con = connection;
-		this.id = i;
 	}
 
 
@@ -39,7 +37,7 @@ public class EditMarkDAO {
 	
 	}
 	
-	public void changeToInserito(Integer idstudent, Integer idround) throws SQLException {		
+	public void changeToInserted(Integer idstudent, Integer idround) throws SQLException {		
 
 		String query = "UPDATE registered SET state = 1 where idstudent = ? and idround = ?";
 		
@@ -53,13 +51,27 @@ public class EditMarkDAO {
 	}
 
 	
-	public void changeStatusToPubblicato(Integer idround) throws SQLException {		
+	public void changeStatusToPublished(Integer idround) throws SQLException {		
 
 		String query = "UPDATE registered SET state = 2 where idround = ? and state = 1";
 		
 		try (PreparedStatement pstatement = con.prepareStatement(query);) {
 
 			pstatement.setInt(1, idround);
+			
+			pstatement.executeUpdate();
+		}
+	}
+	
+	
+	public void changeStatusToRejected(Integer idstudent, Integer idround) throws SQLException {		
+
+		String query = "UPDATE registered SET state = 3 where idstudent = ? and idround = ?";
+		
+		try (PreparedStatement pstatement = con.prepareStatement(query);) {
+
+			pstatement.setInt(1, idstudent);
+			pstatement.setInt(2, idround);
 			
 			pstatement.executeUpdate();
 		}

@@ -24,7 +24,7 @@ import it.polimi.tiw.beans.RegisteredStudent;
 import it.polimi.tiw.beans.Round;
 import it.polimi.tiw.beans.User;
 import it.polimi.tiw.dao.ClassesDAO;
-import it.polimi.tiw.dao.YourMarkDAO;
+import it.polimi.tiw.dao.RegisteredStudentsDAO;
 
 import it.polimi.tiw.utils.ConnectionHandler;
 
@@ -72,7 +72,7 @@ public class GoToVisualizeYourMarkStudentPage extends HttpServlet {
 		int roundid = Integer.parseInt(request.getParameter("roundid"));
 		
 		
-		YourMarkDAO yourMarkDAO = new YourMarkDAO(connection);
+	
 		List<RegisteredStudent> infoStudent = new ArrayList<RegisteredStudent>();
 		Integer studentid = null;
 		
@@ -92,6 +92,8 @@ public class GoToVisualizeYourMarkStudentPage extends HttpServlet {
 		}
 		
 		
+		RegisteredStudentsDAO registeredStudentsDAO = new RegisteredStudentsDAO(connection);
+		
 		try {
 			//extracting info about the clicked student (attending that round) 
 			
@@ -99,7 +101,7 @@ public class GoToVisualizeYourMarkStudentPage extends HttpServlet {
 			System.out.println("roundid: " + roundid);
 			System.out.println("studentid: " + studentid);
 
-			infoStudent = yourMarkDAO.findInfoMarkStudentByRoundIDAndStudentID(roundid, studentid);
+			infoStudent = registeredStudentsDAO.findInfoStudentByRoundIDAndStudentID(roundid, studentid);
 			
 			
 		} catch (SQLException e) {

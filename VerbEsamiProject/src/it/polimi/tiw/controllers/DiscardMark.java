@@ -21,7 +21,6 @@ import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 import it.polimi.tiw.beans.User;
 import it.polimi.tiw.dao.EditMarkDAO;
-import it.polimi.tiw.dao.YourMarkDAO;
 
 import it.polimi.tiw.utils.ConnectionHandler;
 
@@ -61,14 +60,14 @@ public class DiscardMark extends HttpServlet {
 		int userid = u.getId();
 		
 		
-		YourMarkDAO yourMarkDAO = new YourMarkDAO(connection);
+		EditMarkDAO editMarkDAO = new EditMarkDAO(connection);
 		
 
 		try {
 			
 			System.out.println("Changing status in the database...");
 			
-			yourMarkDAO.changeStatusToRifiutato(userid, roundid);
+			editMarkDAO.changeStatusToRejected(userid, roundid);
 			
 			//editMarkDAO.changeStatusToPubblicato(roundid);
 			

@@ -22,7 +22,6 @@ import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 import it.polimi.tiw.beans.RegisteredStudent;
 import it.polimi.tiw.beans.User;
 
-import it.polimi.tiw.dao.OrderDAO;
 import it.polimi.tiw.dao.RegisteredStudentsDAO;
 import it.polimi.tiw.beans.SavedOrder;
 
@@ -67,17 +66,15 @@ public class GoToRegisteredToRoundPage extends HttpServlet {
 		
 		HttpSession session = request.getSession();
 
-		User user = (User) session.getAttribute("user");
-		
-		RegisteredStudentsDAO registeredStudentsDAO = new RegisteredStudentsDAO(connection);	
+		User user = (User) session.getAttribute("user");	
 	
 		List<RegisteredStudent> registeredStudents = new ArrayList<RegisteredStudent>();
 		
-		Integer roundid = null;
+		int roundId;
 		int lastClicked;
 		
 		try {
-			roundid = Integer.parseInt(request.getParameter("roundId"));
+			roundId = Integer.parseInt(request.getParameter("roundId"));
 			lastClicked = Integer.parseInt(request.getParameter("lastClicked"));
 		
 		} catch (NumberFormatException | NullPointerException e) {
@@ -92,7 +89,7 @@ public class GoToRegisteredToRoundPage extends HttpServlet {
 			
 			savedOrder = (SavedOrder) session.getAttribute("savedOrder");
 			savedOrder.checkLastClicked(lastClicked);
-			session.setAttribute("savedOrder", savedOrder);
+			session.setAttribute("savedOrder", savedOrder);  //updating the object in session
 		}
 		else { //first time getting to this page
 			
@@ -101,46 +98,29 @@ public class GoToRegisteredToRoundPage extends HttpServlet {
 		}
 		
 		
-		OrderDAO orderDAO = new OrderDAO(connection);
+		RegisteredStudentsDAO registeredStudentsDAO = new RegisteredStudentsDAO(connection);
 		
-		/*
-		try {
-			//roundid = (Integer) session.getAttribute("roundid");
-			roundid = (Integer) Integer.parseInt(request.getParameter("roundid"));
-			
-			
-			session.setAttribute("roundid", roundid);
-			System.out.println("saved in the session the RoundID: " + roundid);
-			
-			session.setAttribute("savedOrder", savedOrder);
-			System.out.println("saved in the session the Order: ");
-
-
-		} catch(NumberFormatException | NullPointerException e) {
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Incorrect param values");
-			return;
-		}
-		*/
+		
 		try {
 			
-			switch (lastClicked) {
-			
+			switch (savedOrder.getClickedColumn()) {
+			//studentNumber
 			case 1:
 				if (savedOrder.getOrdineCrescente()) {
-					registeredStudents = orderDAO.orderByStudNumbAsc(user.getId(), roundid);
+					registeredStudents = registeredStudentsDAO.getRegisteredStudentsOrdered(roundId, "s.studentnumber", "asc");
 				}
 				else {
-					registeredStudents = orderDAO.orderByStudNumbDesc(user.getId(), roundid);
+					registeredStudents = registeredStudentsDAO.getRegisteredStudentsOrdered(roundId, "s.studentnumber", "desc");
 				}
 				break;
 				
 				//surname
 			case 2:
 				if (savedOrder.getOrdineCrescente()) {
-					registeredStudents = orderDAO.orderBySurnameAsc(user.getId(), roundid);
+					registeredStudents = registeredStudentsDAO.getRegisteredStudentsOrdered(roundId, "u.surname", "asc");
 				}
 				else {
-					registeredStudents = orderDAO.orderBySurnameDesc(user.getId(), roundid);
+					registeredStudents = registeredStudentsDAO.getRegisteredStudentsOrdered(roundId, "u.surname", "desc");
 				}
 				break;
 
@@ -148,10 +128,10 @@ public class GoToRegisteredToRoundPage extends HttpServlet {
 				//name
 			case 3:
 				if (savedOrder.getOrdineCrescente()) {
-					registeredStudents = orderDAO.orderByNameAsc(user.getId(), roundid);
+					registeredStudents = registeredStudentsDAO.getRegisteredStudentsOrdered(roundId, "u.name", "asc");
 				}
 				else {
-					registeredStudents = orderDAO.orderByNameDesc(user.getId(), roundid);
+					registeredStudents = registeredStudentsDAO.getRegisteredStudentsOrdered(roundId, "u.name", "desc");
 				}
 				break;
 
@@ -159,10 +139,10 @@ public class GoToRegisteredToRoundPage extends HttpServlet {
 				//email
 			case 4:
 				if (savedOrder.getOrdineCrescente()) {
-					registeredStudents = orderDAO.orderByMailAsc(user.getId(), roundid);
+					registeredStudents = registeredStudentsDAO.getRegisteredStudentsOrdered(roundId, "u.email", "asc");
 				}
 				else {
-					registeredStudents = orderDAO.orderByMailDesc(user.getId(), roundid);
+					registeredStudents = registeredStudentsDAO.getRegisteredStudentsOrdered(roundId, "u.email", "desc");
 				}
 				break;
 
@@ -170,30 +150,30 @@ public class GoToRegisteredToRoundPage extends HttpServlet {
 				//degree course
 			case 5:
 				if (savedOrder.getOrdineCrescente()) {
-					registeredStudents = orderDAO.orderByDegreeAsc(user.getId(), roundid);
+					registeredStudents = registeredStudentsDAO.getRegisteredStudentsOrdered(roundId, "s.degreecourse", "asc");
 				}
 				else {
-					registeredStudents = orderDAO.orderByDegreeDesc(user.getId(), roundid);
+					registeredStudents = registeredStudentsDAO.getRegisteredStudentsOrdered(roundId, "s.degreecourse", "desc");
 				}
 				break;
 
 				//mark
 			case 6:
 				if (savedOrder.getOrdineCrescente()) {
-					registeredStudents = orderDAO.orderByMarkAsc(user.getId(), roundid);
+					registeredStudents = registeredStudentsDAO.getRegisteredStudentsOrdered(roundId, "r.mark", "asc");
 				}
 				else {
-					registeredStudents = orderDAO.orderByMarkDesc(user.getId(), roundid);
+					registeredStudents = registeredStudentsDAO.getRegisteredStudentsOrdered(roundId, "r.mark", "desc");
 				}
 				break;
 
 				
 			case 7:
 				if (savedOrder.getOrdineCrescente()) {
-					registeredStudents = orderDAO.orderByStatusAsc(user.getId(), roundid);
+					registeredStudents = registeredStudentsDAO.getRegisteredStudentsOrdered(roundId, "r.state", "asc");
 				}
 				else {
-					registeredStudents = orderDAO.orderByStatusDesc(user.getId(), roundid);
+					registeredStudents = registeredStudentsDAO.getRegisteredStudentsOrdered(roundId, "r.state", "desc");
 				}
 				break;
 
@@ -207,30 +187,14 @@ public class GoToRegisteredToRoundPage extends HttpServlet {
 			return;
 		}
  		
-/*
-		try {
-			//get the classid from the request and the userid from the session
-			//isTaughtByProfessor = roundsDAO.isClassTaughtByProfessor(user.getId(), classid);
-			//classExists = roundsDAO.doesClassExists(classid);
 
-			//extracting the list of students registered to the given roundid (saved in the request)
-			//registeredStudents = registeredStudentsDAO.findRegisteredStudentsToRound(user.getId(), roundid);
-			
-			registeredStudents = orderDAO.orderByStudNumbAsc(user.getId(), roundid);
-			
-		} catch (SQLException e) {
-			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Not possible to recover list of students registered");
-			return;
-		}
-		*/
-		
 		
 		String path = "/WEB-INF/prof/RegisteredToRound.html";
 		
 		ServletContext servletContext = getServletContext();
 		
 		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
-		ctx.setVariable("roundId", roundid);
+		ctx.setVariable("roundId", roundId);
 		ctx.setVariable("registeredStudents", registeredStudents);
 
 		

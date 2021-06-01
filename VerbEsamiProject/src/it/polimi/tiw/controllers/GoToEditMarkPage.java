@@ -109,7 +109,7 @@ public class GoToEditMarkPage extends HttpServlet {
 		try {
 			//extracting info about the clicked student (attending that round) 
 			
-			infoStudent = registeredStudentsDAO.findInfoStudentByRoundIDAndStudentID(user.getId(), roundId, studentId);
+			infoStudent = registeredStudentsDAO.findInfoStudentByRoundIDAndStudentID(roundId, studentId);
 			
 			
 		} catch (SQLException e) {

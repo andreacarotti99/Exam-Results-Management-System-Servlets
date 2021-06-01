@@ -80,7 +80,7 @@ public class VerbalizeMark extends HttpServlet {
 		
 		int userid = u.getId();
 		
-		VerbalizationDAO verbalizationDAO = new VerbalizationDAO(connection, userid);
+		VerbalizationDAO verbalizationDAO = new VerbalizationDAO(connection);
 
 		
 		

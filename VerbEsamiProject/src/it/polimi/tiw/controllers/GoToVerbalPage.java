@@ -71,7 +71,7 @@ public class GoToVerbalPage extends HttpServlet {
 		//we need the verbalizationDAO to set in the context the verbalid and to print it on the html VerbalOfRound
 		RegisteredStudentsDAO registeredStudentsDAO = new RegisteredStudentsDAO(connection);	
 	
-		VerbalizationDAO verbalizationDAO = new VerbalizationDAO(connection, user.getId());
+		VerbalizationDAO verbalizationDAO = new VerbalizationDAO(connection);
 		
 		List<RegisteredStudent> registeredStudents = new ArrayList<RegisteredStudent>();
 		
@@ -97,7 +97,7 @@ public class GoToVerbalPage extends HttpServlet {
 			//classExists = roundsDAO.doesClassExists(classid);
 
 			//extracting the list of students registered to the given roundid (saved in the request)
-			registeredStudents = registeredStudentsDAO.findVerbalizedStudentsToRound(user.getId(), roundId);
+			registeredStudents = registeredStudentsDAO.findVerbalizedStudentsToRound(roundId);
 			
 			//executing again the query to get the newVerbalIdFrom the db
 			newVerbalId = verbalizationDAO.getTuplaGivenIdRoundAndTimestamp(roundId);

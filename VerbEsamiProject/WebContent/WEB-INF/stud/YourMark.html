@@ -16,7 +16,7 @@
 	
 	
 	<div th:if="${infostudent.size()==0 || infostudent[0].status.value == 0 || infostudent[0].status.value == 1}">	
-	<p th:text="${'Voto non ancora definito'}"></p>
+	<p th:text="${'The mark hasn't been published yet'}"></p>
 	</div>
 	
 	
@@ -42,18 +42,18 @@
 	<div th:if="${infostudent[0].status.value == 2}">
 		<div th:if="${infostudent[0].mark != '<empty>' && infostudent[0].mark != 'absent' && infostudent[0].mark != 'failed' && infostudent[0].mark != 'skip next round'}">
 		
-		<p th:text="${'Mark published, press discard to discard the mark'}"></p>
-		<td> <a th:href="@{/DiscardMark(roundid=${infostudent[0].roundID} )}"> <button type="button"> Discard Mark </button> </a> </td>
+		<p th:text="${'Mark published, press discard button to discard the mark'}"></p>
+		<td> <a th:href="@{/DiscardMark(roundid=${infostudent[0].roundID} )}"> <button type="button"> Reject Mark </button> </a> </td>
 		
 		</div>
 	</div>
 	
 	<div th:if="${infostudent[0].status.value == 3}">
-	<p th:text="${'The mark was discarded'}"></p>
+	<p th:text="${'The mark was rejected'}"></p>
 	</div>
 	
 	<div th:if="${infostudent[0].status.value == 4}">
-	<p th:text="${'Il voto è stato verbalizzato'}"></p>
+	<p th:text="${'The mark has been recorded'}"></p>
 	</div>
 
 

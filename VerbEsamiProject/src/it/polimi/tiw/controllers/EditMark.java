@@ -91,14 +91,14 @@ public class EditMark extends HttpServlet {
 				
 		int userid = u.getId();
 		
-		EditMarkDAO editMarkDAO = new EditMarkDAO(connection, userid);
+		EditMarkDAO editMarkDAO = new EditMarkDAO(connection);
 
 		try {
 			
 			System.out.println("Replacing Mark in the database and changing state...");
 
 			editMarkDAO.createNewMark(newMark, selectedStudent, roundId);
-			editMarkDAO.changeToInserito(selectedStudent, roundId);
+			editMarkDAO.changeToInserted(selectedStudent, roundId);
 
 			
 		} catch (SQLException e) {
