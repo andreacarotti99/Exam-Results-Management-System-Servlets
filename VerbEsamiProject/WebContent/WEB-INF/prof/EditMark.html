@@ -25,11 +25,11 @@
 	<hr>
 	
 	
-	<div th:if="${infostudent[0].status.getValue == 0}">	
+	<div th:if="${infostudent[0].status.getValue == 0 || infostudent[0].status.getValue == 0 }">	
 	
 		<div>
 		<p>Complete the form to Edit the Mark</p>
-		<form th:action="@{/EditMark}" method="POST">
+		<form th:action="@{/EditMark(studentId=${studentId},roundId=${roundId})}" method="POST">
 			<fieldset>
 				
 				<p>

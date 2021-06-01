@@ -58,6 +58,7 @@ public class EditMark extends HttpServlet {
 		HttpSession s = request.getSession();
 		User u = (User) s.getAttribute("user");
 		
+		/*
 		int roundid = (int) s.getAttribute("roundid");
 		
 		int selectedStudent = (int) s.getAttribute("selectedstudent");
@@ -67,10 +68,22 @@ public class EditMark extends HttpServlet {
 		
 		System.out.println(roundid);
 		System.out.println(selectedStudent);
-				
-		newMark = Integer.parseInt(request.getParameter("newMark"));
+			*/
+		int roundId;
+		int selectedStudent;
 		
-		if (newMark == null || newMark >= 32 || newMark <= 0 || (newMark >= 4 && newMark <= 17)) {
+		try {
+			roundId = Integer.parseInt(request.getParameter("roundId"));
+			selectedStudent = Integer.parseInt(request.getParameter("studentId"));
+			newMark = Integer.parseInt(request.getParameter("newMark"));
+			
+		}catch(NumberFormatException | NullPointerException e) {
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Incorrect param values");
+			return;
+		}
+		
+		
+		if (newMark >= 32 || newMark <= 0 || (newMark >= 4 && newMark <= 17)) {
 			s.setAttribute("errorMessage", "Don't try to input wrong marks");
 			response.sendRedirect(loginpath);
 			return;
@@ -84,8 +97,8 @@ public class EditMark extends HttpServlet {
 			
 			System.out.println("Replacing Mark in the database and changing state...");
 
-			editMarkDAO.createNewMark(newMark, selectedStudent, roundid);
-			editMarkDAO.changeToInserito(selectedStudent, roundid);
+			editMarkDAO.createNewMark(newMark, selectedStudent, roundId);
+			editMarkDAO.changeToInserito(selectedStudent, roundId);
 
 			
 		} catch (SQLException e) {
@@ -97,7 +110,7 @@ public class EditMark extends HttpServlet {
 		// return the user to the right view --> ERROR TO FIX HERE
 		
 		String ctxpath = getServletContext().getContextPath();
-		String path = ctxpath + "/GoToRegisteredToRoundPage?roundid=" + roundid;
+		String path = ctxpath + "/GoToRegisteredToRoundPage?roundId=" + roundId + "&lastClicked=1";
 		response.sendRedirect(path);
 
 		

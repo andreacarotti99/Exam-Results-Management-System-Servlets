@@ -50,7 +50,9 @@ public class GoToClassesProfessorListPage extends HttpServlet {
 		response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
 		
 		HttpSession session = request.getSession();
-		
+		if (session.getAttribute("savedOrder") != null) {
+			session.removeAttribute("savedOrder");
+		}
 
 		//se invece ho trovato nel db chi corrisponde a quanto scritto nella form istanzio un CourseDAO
 		User user = (User) session.getAttribute("user");

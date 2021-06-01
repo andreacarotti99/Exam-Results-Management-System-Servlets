@@ -26,7 +26,7 @@
 		<tbody>
 			<tr th:each="r : ${rounds}">
 				<td th:text="${r.date}"></td>
-				<td> <a th:href="@{/GoToRegisteredToRoundPage(roundid=${r.roundID})}"> Round Details </a> </td>
+				<td> <a th:href="@{/GoToRegisteredToRoundPage(roundId=${r.roundID},lastClicked=1)}"> Round Details </a> </td>
 				
 				
 			</tr>

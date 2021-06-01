@@ -74,13 +74,36 @@ public class GoToRegisteredToRoundPage extends HttpServlet {
 		List<RegisteredStudent> registeredStudents = new ArrayList<RegisteredStudent>();
 		
 		Integer roundid = null;
+		int lastClicked;
+		
+		try {
+			roundid = Integer.parseInt(request.getParameter("roundId"));
+			lastClicked = Integer.parseInt(request.getParameter("lastClicked"));
+		
+		} catch (NumberFormatException | NullPointerException e) {
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Incorrect param values");
+			return;
+		}
 		
 		//this is for the correct order of the list
-		SavedOrder savedOrder = new SavedOrder();
+		SavedOrder savedOrder;
+		
+		if (session.getAttribute("savedOrder") != null) { //second or more time getting to this page
+			
+			savedOrder = (SavedOrder) session.getAttribute("savedOrder");
+			savedOrder.checkLastClicked(lastClicked);
+			session.setAttribute("savedOrder", savedOrder);
+		}
+		else { //first time getting to this page
+			
+			savedOrder = new SavedOrder();
+			session.setAttribute("savedOrder", savedOrder);
+		}
+		
+		
 		OrderDAO orderDAO = new OrderDAO(connection);
 		
-		
-		
+		/*
 		try {
 			//roundid = (Integer) session.getAttribute("roundid");
 			roundid = (Integer) Integer.parseInt(request.getParameter("roundid"));
@@ -97,8 +120,94 @@ public class GoToRegisteredToRoundPage extends HttpServlet {
 			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Incorrect param values");
 			return;
 		}
-		
+		*/
+		try {
+			
+			switch (lastClicked) {
+			
+			case 1:
+				if (savedOrder.getOrdineCrescente()) {
+					registeredStudents = orderDAO.orderByStudNumbAsc(user.getId(), roundid);
+				}
+				else {
+					registeredStudents = orderDAO.orderByStudNumbDesc(user.getId(), roundid);
+				}
+				break;
+				
+				//surname
+			case 2:
+				if (savedOrder.getOrdineCrescente()) {
+					registeredStudents = orderDAO.orderBySurnameAsc(user.getId(), roundid);
+				}
+				else {
+					registeredStudents = orderDAO.orderBySurnameDesc(user.getId(), roundid);
+				}
+				break;
+
+				
+				//name
+			case 3:
+				if (savedOrder.getOrdineCrescente()) {
+					registeredStudents = orderDAO.orderByNameAsc(user.getId(), roundid);
+				}
+				else {
+					registeredStudents = orderDAO.orderByNameDesc(user.getId(), roundid);
+				}
+				break;
+
+				
+				//email
+			case 4:
+				if (savedOrder.getOrdineCrescente()) {
+					registeredStudents = orderDAO.orderByMailAsc(user.getId(), roundid);
+				}
+				else {
+					registeredStudents = orderDAO.orderByMailDesc(user.getId(), roundid);
+				}
+				break;
+
+				
+				//degree course
+			case 5:
+				if (savedOrder.getOrdineCrescente()) {
+					registeredStudents = orderDAO.orderByDegreeAsc(user.getId(), roundid);
+				}
+				else {
+					registeredStudents = orderDAO.orderByDegreeDesc(user.getId(), roundid);
+				}
+				break;
+
+				//mark
+			case 6:
+				if (savedOrder.getOrdineCrescente()) {
+					registeredStudents = orderDAO.orderByMarkAsc(user.getId(), roundid);
+				}
+				else {
+					registeredStudents = orderDAO.orderByMarkDesc(user.getId(), roundid);
+				}
+				break;
+
+				
+			case 7:
+				if (savedOrder.getOrdineCrescente()) {
+					registeredStudents = orderDAO.orderByStatusAsc(user.getId(), roundid);
+				}
+				else {
+					registeredStudents = orderDAO.orderByStatusDesc(user.getId(), roundid);
+				}
+				break;
+
+			default:
+				System.out.println("Error");
+				break;
+		}
+			
+		} catch (SQLException e) {
+			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Not possible to recover list of students registered");
+			return;
+		}
  		
+/*
 		try {
 			//get the classid from the request and the userid from the session
 			//isTaughtByProfessor = roundsDAO.isClassTaughtByProfessor(user.getId(), classid);
@@ -113,6 +222,7 @@ public class GoToRegisteredToRoundPage extends HttpServlet {
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Not possible to recover list of students registered");
 			return;
 		}
+		*/
 		
 		
 		String path = "/WEB-INF/prof/RegisteredToRound.html";
@@ -120,6 +230,7 @@ public class GoToRegisteredToRoundPage extends HttpServlet {
 		ServletContext servletContext = getServletContext();
 		
 		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
+		ctx.setVariable("roundId", roundid);
 		ctx.setVariable("registeredStudents", registeredStudents);
 
 		

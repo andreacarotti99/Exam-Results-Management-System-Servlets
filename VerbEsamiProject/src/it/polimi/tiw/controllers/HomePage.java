@@ -52,6 +52,9 @@ public class HomePage extends HttpServlet {
 		if (session.getAttribute("user") != null) {
 			session.removeAttribute("user");
 		}
+		if (session.getAttribute("savedOrder") != null) {
+			session.removeAttribute("savedOrder");
+		}
 		
 		String path = "/WEB-INF/index.html";
 		ServletContext servletContext = getServletContext();

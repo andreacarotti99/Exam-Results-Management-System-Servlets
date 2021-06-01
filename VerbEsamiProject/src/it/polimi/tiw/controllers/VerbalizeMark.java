@@ -57,9 +57,27 @@ public class VerbalizeMark extends HttpServlet {
 		
 				
 		HttpSession s = request.getSession();
+		
+		if (s.getAttribute("savedOrder") != null) {
+			s.removeAttribute("savedOrder");
+		}
+		
+		
 		User u = (User) s.getAttribute("user");
+		
+		/*
 		int roundid = (int) s.getAttribute("roundid");
-				
+				*/
+		
+		int roundId;
+		
+		try {
+			roundId = Integer.parseInt(request.getParameter("roundId"));
+		}catch(NumberFormatException | NullPointerException e) {
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Incorrect param values");
+			return;
+		}
+		
 		int userid = u.getId();
 		
 		VerbalizationDAO verbalizationDAO = new VerbalizationDAO(connection, userid);
@@ -67,12 +85,12 @@ public class VerbalizeMark extends HttpServlet {
 		
 		
 		try {
-			//System.out.println("creating verbal...");
+			//FARE TUTTO COME UNA UNICA TRANSAZIONE!!!!!!!!!!!!!!!!!
 			
-			Timestamp date = verbalizationDAO.createVerbalFromStatePubblicatoOrRifiutato(roundid);
-			Integer newVerbalId = verbalizationDAO.getTuplaGivenIdRoundAndTimestamp(roundid);
-			verbalizationDAO.updateNewVerbalIdRegistered(roundid, newVerbalId);
-			verbalizationDAO.changeStatusToVerbalizzato(roundid);
+			Timestamp date = verbalizationDAO.createVerbalFromStatePubblicatoOrRifiutato(roundId);
+			Integer newVerbalId = verbalizationDAO.getTuplaGivenIdRoundAndTimestamp(roundId);
+			verbalizationDAO.updateNewVerbalIdRegistered(roundId, newVerbalId);
+			verbalizationDAO.changeStatusToVerbalizzato(roundId);
 
 			
 		} catch (SQLException e) {
@@ -83,7 +101,7 @@ public class VerbalizeMark extends HttpServlet {
 			
 			
 		String ctxpath = getServletContext().getContextPath();
-		String path = ctxpath + "/GoToVerbalPage?roundid=" + roundid;
+		String path = ctxpath + "/GoToVerbalPage?roundId=" + roundId;
 		response.sendRedirect(path);
 		
 		System.out.println("Redirect was correct");

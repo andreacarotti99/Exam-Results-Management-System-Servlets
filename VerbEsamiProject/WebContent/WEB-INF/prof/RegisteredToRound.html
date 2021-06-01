@@ -14,9 +14,9 @@
 	<h1>Welcome to the List of Registered students of the round </h1>
 	<p th:text="${'Hello ' + session.user.name + ' ' + session.user.surname + ', you are a professor, here you can see the list of registered students of the selected round'}"></p>
 	
-	<td> <a th:href="@{/PublishMarks}"> <button type="button"> Publish Marks </button> </a> </td>
+	<td> <a th:href="@{/PublishMarks(roundId=${roundId})}"> <button type="button"> Publish Marks </button> </a> </td>
 	
-	<td> <a th:href="@{/VerbalizeMark}"> <button type="button"> Record Marks and visualize verbal </button> </a> </td>		
+	<td> <a th:href="@{/VerbalizeMark(roundId=${roundId})}"> <button type="button"> Record Marks and visualize verbal </button> </a> </td>		
 			
 	
 	<p> List of students: </p>
@@ -24,21 +24,20 @@
 	<table>
 		<thead>
 			<tr>
-				<th><a th:href="@{/GoToRegisteredToRoundSecondTime(lastClicked=1)}">studentNumber</a></th>
+				<th><a th:href="@{/GoToRegisteredToRoundPage(roundId=${roundId},lastClicked=1)}">studentNumber</a></th>
 				
-				<th><a th:href="@{/GoToRegisteredToRoundSecondTime(lastClicked=2)}">Surname</a></th>
+				<th><a th:href="@{/GoToRegisteredToRoundPage(roundId=${roundId},lastClicked=2)}">Surname</a></th>
 				
-				<th><a th:href="@{/GoToRegisteredToRoundSecondTime(lastClicked=3)}">Name</a></th>
+				<th><a th:href="@{/GoToRegisteredToRoundPage(roundId=${roundId},lastClicked=3)}">Name</a></th>
 				
-				<th><a th:href="@{/GoToRegisteredToRoundSecondTime(lastClicked=4)}">Email</a></th>
+				<th><a th:href="@{/GoToRegisteredToRoundPage(roundId=${roundId},lastClicked=4)}">Email</a></th>
 				
-				<th><a th:href="@{/GoToRegisteredToRoundSecondTime(lastClicked=5)}">Degree Course</a></th>
+				<th><a th:href="@{/GoToRegisteredToRoundPage(roundId=${roundId},lastClicked=5)}">Degree Course</a></th>
 				
-				<th><a th:href="@{/GoToRegisteredToRoundSecondTime(lastClicked=6)}">Mark</a></th>
+				<th><a th:href="@{/GoToRegisteredToRoundPage(roundId=${roundId},lastClicked=6)}">Mark</a></th>
 				
-				<th><a th:href="@{/GoToRegisteredToRoundSecondTime(lastClicked=7)}">Status</a></th>
+				<th><a th:href="@{/GoToRegisteredToRoundPage(roundId=${roundId},lastClicked=7)}">Status</a></th>
 								
-
 			</tr>
 		</thead>
 		<tbody>
@@ -51,8 +50,7 @@
 				<td th:text="${r.mark}"></td>
 				<td th:text="${r.status}"></td>
 				
-				<td> <a th:href="@{/GoToEditMarkPage(studentid=${r.id} )}"> <button type="button"> Edit Mark </button> </a> </td>														
-				
+				<td th:if="${r.status.getValue == 0 || r.status.getValue == 1}"> <a th:href="@{/GoToEditMarkPage(studentId=${r.id},roundId=${roundId})}"> <button type="button"> Edit Mark </button> </a> </td>														
 				
 			</tr>
 		</tbody>

@@ -65,21 +65,36 @@ public class GoToEditMarkPage extends HttpServlet {
 		response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
 		
 		HttpSession session = request.getSession();
+		
+		if (session.getAttribute("savedOrder") != null) {
+			session.removeAttribute("savedOrder");
+		}
 
 		User user = (User) session.getAttribute("user");
 		
-		int roundid = (int) session.getAttribute("roundid");
+		int roundId;
 		
 		
 		RegisteredStudentsDAO registeredStudentsDAO = new RegisteredStudentsDAO(connection);
 		
 		List<RegisteredStudent> infoStudent = new ArrayList<RegisteredStudent>();
 				
-		Integer studentid = null;
+		int studentId;
 		
 		try {
+			roundId = Integer.parseInt(request.getParameter("roundId"));
+			studentId = Integer.parseInt(request.getParameter("studentId"));
+			
+		}catch(NumberFormatException | NullPointerException e) {
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Incorrect param values");
+			return;
+		}
+		
+		
+		/*
+		try {
 			//getting studentid from the session
-			studentid = Integer.parseInt(request.getParameter("studentid"));
+			studentid = Integer.parseInt(request.getParameter("studentId"));
 			//System.out.println(studentid);
 			request.getSession().setAttribute("selectedstudent", studentid);
 			
@@ -88,12 +103,13 @@ public class GoToEditMarkPage extends HttpServlet {
 			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Incorrect param values");
 			return;
 		}
+		*/
 		
 		
 		try {
 			//extracting info about the clicked student (attending that round) 
 			
-			infoStudent = registeredStudentsDAO.findInfoStudentByRoundIDAndStudentID(user.getId(), roundid, studentid);
+			infoStudent = registeredStudentsDAO.findInfoStudentByRoundIDAndStudentID(user.getId(), roundId, studentId);
 			
 			
 		} catch (SQLException e) {
@@ -108,6 +124,9 @@ public class GoToEditMarkPage extends HttpServlet {
 		
 		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
 		ctx.setVariable("infostudent", infoStudent);
+		ctx.setVariable("studentId", studentId);
+		ctx.setVariable("roundId", roundId);
+		
 		templateEngine.process(path, ctx, response.getWriter());
 		
 		

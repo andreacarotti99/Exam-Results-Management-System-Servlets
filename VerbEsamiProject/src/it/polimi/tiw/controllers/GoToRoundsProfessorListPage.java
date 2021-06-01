@@ -54,6 +54,9 @@ public class GoToRoundsProfessorListPage extends HttpServlet {
 		//String loginpath = getServletContext().getContextPath() + "/index.html";
 		HttpSession session = request.getSession();
 		
+		if (session.getAttribute("savedOrder") != null) {
+			session.removeAttribute("savedOrder");
+		}
 		//se arrivo alla pagina CoursesListPage in modi "diversi" e quindi la sessione è nuova oppure se nel db non si è trovato l'utente
 		//rimanda alla pagina di login
 		/*

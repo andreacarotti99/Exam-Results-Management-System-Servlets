@@ -75,14 +75,13 @@ public class GoToVerbalPage extends HttpServlet {
 		
 		List<RegisteredStudent> registeredStudents = new ArrayList<RegisteredStudent>();
 		
-		Integer roundid = null;
-		Integer newVerbalId = null;
+		int roundId;
+		int newVerbalId;
 		Verbal verbal = new Verbal();
 		
 		try {
-			roundid = Integer.parseInt(request.getParameter("roundid"));
-			session.setAttribute("roundid", roundid);
-			System.out.println("RoundID: " + roundid);
+			roundId = Integer.parseInt(request.getParameter("roundId"));
+			
 
 		} catch(NumberFormatException | NullPointerException e) {
 			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Incorrect param values");
@@ -91,15 +90,17 @@ public class GoToVerbalPage extends HttpServlet {
 		
  		
 		try {
+			//FARE TUTTO COME UNA UNICA TRANSAZIONE!!!!!!!!!!!!!!!!!
+			
 			//get the classid from the request and the userid from the session
 			//isTaughtByProfessor = roundsDAO.isClassTaughtByProfessor(user.getId(), classid);
 			//classExists = roundsDAO.doesClassExists(classid);
 
 			//extracting the list of students registered to the given roundid (saved in the request)
-			registeredStudents = registeredStudentsDAO.findVerbalizedStudentsToRound(user.getId(), roundid);
+			registeredStudents = registeredStudentsDAO.findVerbalizedStudentsToRound(user.getId(), roundId);
 			
 			//executing again the query to get the newVerbalIdFrom the db
-			newVerbalId = verbalizationDAO.getTuplaGivenIdRoundAndTimestamp(roundid);
+			newVerbalId = verbalizationDAO.getTuplaGivenIdRoundAndTimestamp(roundId);
 			
 			verbal.setVerbalID(newVerbalId);
 			

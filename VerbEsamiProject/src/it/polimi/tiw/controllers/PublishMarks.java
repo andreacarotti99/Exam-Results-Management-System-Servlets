@@ -55,9 +55,28 @@ public class PublishMarks extends HttpServlet {
 		
 				
 		HttpSession s = request.getSession();
+		
+		if (s.getAttribute("savedOrder") != null) {
+			s.removeAttribute("savedOrder");
+		}
+		
+		
 		User u = (User) s.getAttribute("user");
+		
+		/*
 		int roundid = (int) s.getAttribute("roundid");
-				
+			*/
+		
+		int roundId;
+		
+		try {
+			roundId = Integer.parseInt(request.getParameter("roundId"));
+		}catch(NumberFormatException | NullPointerException e) {
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Incorrect param values");
+			return;
+		}
+		
+		
 		int userid = u.getId();
 		
 		EditMarkDAO editMarkDAO = new EditMarkDAO(connection, userid);
@@ -66,7 +85,7 @@ public class PublishMarks extends HttpServlet {
 			
 			System.out.println("Changing status in the database...");
 			
-			editMarkDAO.changeStatusToPubblicato(roundid);
+			editMarkDAO.changeStatusToPubblicato(roundId);
 			
 			
 		} catch (SQLException e) {
@@ -76,7 +95,7 @@ public class PublishMarks extends HttpServlet {
 		}
 			
 		String ctxpath = getServletContext().getContextPath();
-		String path = ctxpath + "/GoToRegisteredToRoundPage?roundid=" + roundid;
+		String path = ctxpath + "/GoToRegisteredToRoundPage?roundId=" + roundId + "&lastClicked=1";
 		response.sendRedirect(path);
 		
 		System.out.println("Redirect was correct");

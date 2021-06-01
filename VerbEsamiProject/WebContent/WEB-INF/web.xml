@@ -41,7 +41,6 @@
   	<url-pattern>/EditMark</url-pattern>
   	<url-pattern>/GoToEditMarkPage</url-pattern>
   	<url-pattern>/GoToRegisteredToRoundPage</url-pattern>
-  	<url-pattern>/GoToRegisteredToRoundSecondTime</url-pattern>
   	<url-pattern>/GoToVerbalPage</url-pattern>
   	<url-pattern>/GoToVisualizeYourMarkStudentPage</url-pattern>
   	<url-pattern>/PublishMarks</url-pattern>
@@ -57,7 +56,6 @@
   	<url-pattern>/EditMark</url-pattern>
   	<url-pattern>/GoToEditMarkPage</url-pattern>
   	<url-pattern>/GoToRegisteredToRoundPage</url-pattern>
-  	<url-pattern>/GoToRegisteredToRoundSecondTime</url-pattern>
   	<url-pattern>/GoToVerbalPage</url-pattern>
   	<url-pattern>/PublishMarks</url-pattern>
   	<url-pattern>/VerbalizeMarks</url-pattern>
