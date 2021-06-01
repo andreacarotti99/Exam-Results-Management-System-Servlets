@@ -51,6 +51,7 @@ public class EditMark extends HttpServlet {
 
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		String loginpath = request.getServletContext().getContextPath() + "/HomePage";
 		
 		Integer newMark = null;
 		
@@ -70,7 +71,8 @@ public class EditMark extends HttpServlet {
 		newMark = Integer.parseInt(request.getParameter("newMark"));
 		
 		if (newMark == null || newMark >= 32 || newMark <= 0 || (newMark >= 4 && newMark <= 17)) {
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Error with new Mark");
+			s.setAttribute("errorMessage", "Don't try to input wrong marks");
+			response.sendRedirect(loginpath);
 			return;
 		}
 				
