@@ -1,12 +1,13 @@
 package it.polimi.tiw.beans;
 
+
 //Enum: https://docs.oracle.com/javase/tutorial/java/javaOO/enum.html
 public enum MarkStatus {
-	NONINSERITO(0),
-	INSERITO(1),
-	PUBBLICATO(2),
-	RIFIUTATO(3),
-	VERBALIZZATO(4);
+	NOT_INSERTED(0),
+	INSERTED(1),
+	PUBLISHED(2),
+	REJECTED(3),
+	RECORDED(4);
 	
 
 	private final int value;
@@ -18,15 +19,15 @@ public enum MarkStatus {
 	public static MarkStatus getMarkStatusFromInt(int value) {
 		switch (value) {
 		case 0:
-			return MarkStatus.NONINSERITO;
+			return MarkStatus.NOT_INSERTED;
 		case 1:
-			return MarkStatus.INSERITO;
+			return MarkStatus.INSERTED;
 		case 2:
-			return MarkStatus.PUBBLICATO;
+			return MarkStatus.PUBLISHED;
 		case 3:
-			return MarkStatus.RIFIUTATO;
+			return MarkStatus.REJECTED;
 		case 4:
-			return MarkStatus.VERBALIZZATO;
+			return MarkStatus.RECORDED;
 		}
 		return null;
 	}
@@ -35,4 +36,3 @@ public enum MarkStatus {
 		return value;
 	}
 }
-

@@ -9,7 +9,7 @@
 
 <body>
 
-	<a href="http://localhost:8080/VerbEsamiProject/HomePage">logout</a>
+	<a href="/HomePage">logout</a>
 	
 	<h1>Student info Page </h1>
 	<p th:text="${'Hello ' + session.user.name + ' ' + session.user.surname + ', these are information about the selected exam: '}"></p>
@@ -40,8 +40,12 @@
 	</div>
 	
 	<div th:if="${infostudent[0].status.value == 2}">
-	<p th:text="${'Mark published, press discard to discard the mark'}"></p>
-	<td> <a th:href="@{/DiscardMark(roundid=${infostudent[0].roundID} )}"> <button type="button"> Discard Mark </button> </a> </td>
+		<div th:if="${infostudent[0].mark != '<empty>' && infostudent[0].mark != 'absent' && infostudent[0].mark != 'failed' && infostudent[0].mark != 'skip next round'}">
+		
+		<p th:text="${'Mark published, press discard to discard the mark'}"></p>
+		<td> <a th:href="@{/DiscardMark(roundid=${infostudent[0].roundID} )}"> <button type="button"> Discard Mark </button> </a> </td>
+		
+		</div>
 	</div>
 	
 	<div th:if="${infostudent[0].status.value == 3}">

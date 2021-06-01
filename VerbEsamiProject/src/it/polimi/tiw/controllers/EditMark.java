@@ -69,7 +69,7 @@ public class EditMark extends HttpServlet {
 				
 		newMark = Integer.parseInt(request.getParameter("newMark"));
 		
-		if (newMark == null || newMark >= 30 || newMark <= 18) {
+		if (newMark == null || newMark >= 32 || newMark <= 0 || (newMark >= 4 && newMark <= 17)) {
 			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Error with new Mark");
 			return;
 		}

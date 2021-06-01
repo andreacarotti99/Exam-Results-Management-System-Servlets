@@ -9,14 +9,14 @@
 
 <body>
 
-	<a href="http://localhost:8080/VerbEsamiProject/HomePage">logout</a>
+	<a href="/HomePage">logout</a>
 	
 	<h1>Welcome to the List of Registered students of the round </h1>
 	<p th:text="${'Hello ' + session.user.name + ' ' + session.user.surname + ', you are a professor, here you can see the list of registered students of the selected round'}"></p>
 	
 	<td> <a th:href="@{/PublishMarks}"> <button type="button"> Publish Marks </button> </a> </td>
 	
-	<td> <a th:href="@{/VerbalizeMark}"> <button type="button"> Verbalize Marks and visualize verbal </button> </a> </td>		
+	<td> <a th:href="@{/VerbalizeMark}"> <button type="button"> Record Marks and visualize verbal </button> </a> </td>		
 			
 	
 	<p> List of students: </p>

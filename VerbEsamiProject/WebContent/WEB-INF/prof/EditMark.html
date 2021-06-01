@@ -9,7 +9,7 @@
 
 <body>
 
-	<a href="http://localhost:8080/VerbEsamiProject/HomePage">logout</a>
+	<a href="/HomePage">logout</a>
 	
 	<h1>Student info Page </h1>
 	<p th:text="${'Hello ' + session.user.name + ' ' + session.user.surname + ', these are the round information about the selected student:'}"></p>
@@ -33,7 +33,27 @@
 			<fieldset>
 				
 				<p>
-					New Mark: <input type="number" name="newMark" min=18 max=30 required />		
+					<!--New Mark: <input type="number" name="newMark" min=18 max=30 required />	-->	
+					
+					<select name="newMark" type="number" required>
+						<option value=1 selected>absent</option>
+						<option value=2 selected>failed</option>
+						<option value=3 selected>skip next round</option>
+						<option value=18 selected>18</option>
+						<option value=19 selected>19</option>
+						<option value=20 selected>20</option>
+						<option value=21 selected>21</option>
+						<option value=22 selected>22</option>
+						<option value=23 selected>23</option>
+						<option value=24 selected>24</option>
+						<option value=25 selected>25</option>
+						<option value=26 selected>26</option>
+						<option value=27 selected>27</option>
+						<option value=28 selected>28</option>
+						<option value=29 selected>29</option>
+						<option value=30 selected>30</option>
+						<option value=31 selected>30 with honour</option>
+					</select>
 				</p>
 				
 				<input type="submit" name="Submit Mark">
