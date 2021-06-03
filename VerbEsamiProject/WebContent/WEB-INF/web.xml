@@ -45,6 +45,7 @@
   	<url-pattern>/GoToVisualizeYourMarkStudentPage</url-pattern>
   	<url-pattern>/PublishMarks</url-pattern>
   	<url-pattern>/VerbalizeMarks</url-pattern>
+  	<url-pattern>/RegisterToRound</url-pattern>
   	<dispatcher>REQUEST</dispatcher>
   	<dispatcher>FORWARD</dispatcher>
   </filter-mapping>
@@ -69,6 +70,7 @@
   	<url-pattern>/GoToRoundsStudentListPage</url-pattern>
   	<url-pattern>/DiscardMark</url-pattern>
   	<url-pattern>/GoToVisualizeYourMarkStudentPage</url-pattern>
+  	<url-pattern>/RegisterToRound</url-pattern>
   	<dispatcher>REQUEST</dispatcher>
   	<dispatcher>FORWARD</dispatcher>
   </filter-mapping>

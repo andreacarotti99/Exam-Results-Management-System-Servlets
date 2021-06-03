@@ -26,8 +26,10 @@
 				<tr th:each="r : ${rounds}">
 					<td th:text="${r.date}"></td>
 					
-					<td><a th:href="@{/GoToVisualizeYourMarkStudentPage(roundid=${r.roundID})}">Details</a></td>
+					<td th:if="${r.studentRegistered}"><a th:href="@{/GoToVisualizeYourMarkStudentPage(roundid=${r.roundID})}">Details</a></td>
 					
+					<!-- th:unless is the opposite of th:if -->
+					<td th:unless="${r.studentRegistered}"><a th:href="@{/RegisterToRound(roundId=${r.roundID})}">Register</a></td>
 				</tr>
 			</tbody>
 		</table>

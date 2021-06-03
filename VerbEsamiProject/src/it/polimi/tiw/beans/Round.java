@@ -7,6 +7,7 @@ public class Round {
 	private int roundId;
 	private Date date;
 	private String className;
+	private boolean studentRegistered;
 	
 	
 	public int getRoundId() {
@@ -20,7 +21,15 @@ public class Round {
 	public String getClassName() {
 		return className;
 	}
-	
+
+	public boolean isStudentRegistered() {
+		return studentRegistered;
+	}
+
+	public void setStudentRegistered(boolean studentRegistered) {
+		this.studentRegistered = studentRegistered;
+	}
+
 	public void setDate(Date date) {
 		this.date = date;
 	}

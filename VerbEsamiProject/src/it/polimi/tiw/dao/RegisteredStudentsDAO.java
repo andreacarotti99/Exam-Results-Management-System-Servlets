@@ -4,7 +4,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import it.polimi.tiw.beans.RegisteredStudent;
@@ -104,5 +106,19 @@ public class RegisteredStudentsDAO {
 			}
 		return registeredStudents;	
 		}
+	}
+	
+	
+	
+	public void registerStudentToRound(int roundId, int studentId) throws SQLException {
+		
+		String query = "INSERT INTO registered (idstudent, idround, mark, state) VALUE (?, ?, 0, 0)";
+		
+		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
+			pstatement.setInt(1, studentId);
+			pstatement.setInt(2, roundId);
+			pstatement.executeUpdate();
+		}
+		
 	}
 }

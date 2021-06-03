@@ -102,7 +102,7 @@ public class GoToRoundsProfessorListPage extends HttpServlet {
 		try {
 
 			//extracting the list of rounds of the professor
-			rounds = roundsDAO.findRoundsByProfessorAndClass(user.getId(), classId);
+			rounds = roundsDAO.findAllRoundsOfThisClass(classId);
 			
 			className = extraInfoDAO.getClassName(classId);
 			

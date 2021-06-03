@@ -167,4 +167,25 @@ public class GeneralChecksDAO {
 	}
 	
 	
+	public boolean isStudentAttendingThisRoundsClass(int roundId, int studentId) throws SQLException {
+		int output = 0;
+		
+		String query = "SELECT count(*) FROM round r join attend a on r.idclass = a.idclass WHERE a.idstudent = ? AND r.idround = ?";
+		
+		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
+			pstatement.setInt(1, studentId);
+			pstatement.setInt(2, roundId);
+			
+			try (ResultSet result = pstatement.executeQuery();) {
+				while(result.next()) {
+					output = result.getInt("count(*)");
+				}
+			}
+		}
+		
+		if (output == 1) return true;
+		else return false;
+	}
+	
+	
 }

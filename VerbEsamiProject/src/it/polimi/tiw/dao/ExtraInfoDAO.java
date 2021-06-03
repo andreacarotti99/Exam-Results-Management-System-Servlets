@@ -78,4 +78,21 @@ public class ExtraInfoDAO {
 	}
 	
 
+	public int getClassIdOfRound(int roundId) throws SQLException {
+		
+		String query = "SELECT * FROM round WHERE idround = ?";
+		
+		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
+			pstatement.setInt(1, roundId);
+			
+			try (ResultSet result = pstatement.executeQuery();) {
+				while (result.next()) {  //this should only loop once if the db is created correctly
+					
+					return result.getInt("idclass");
+				}
+			}
+		}
+		
+		return -1;  //should never get here
+	}
 }
