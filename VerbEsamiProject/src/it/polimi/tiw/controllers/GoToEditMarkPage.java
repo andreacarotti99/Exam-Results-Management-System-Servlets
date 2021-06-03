@@ -22,27 +22,24 @@ import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 import it.polimi.tiw.beans.Classe;
 import it.polimi.tiw.beans.RegisteredStudent;
 import it.polimi.tiw.beans.Round;
+import it.polimi.tiw.beans.SavedOrder;
 import it.polimi.tiw.beans.User;
 import it.polimi.tiw.dao.ClassesDAO;
+import it.polimi.tiw.dao.GeneralChecksDAO;
 import it.polimi.tiw.dao.RegisteredStudentsDAO;
 
 import it.polimi.tiw.utils.ConnectionHandler;
 
-/**
- * Servlet implementation class GoToRegisteredToRoundPage
- */
+
 @WebServlet("/GoToEditMarkPage")
 public class GoToEditMarkPage extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private TemplateEngine templateEngine;
 	private Connection connection = null;
        
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
+    
     public GoToEditMarkPage() {
         super();
-        // TODO Auto-generated constructor stub
     }
     
 	public void init() throws ServletException {
@@ -50,37 +47,29 @@ public class GoToEditMarkPage extends HttpServlet {
 		ServletContext servletContext = getServletContext();
 		ServletContextTemplateResolver templateResolver = new ServletContextTemplateResolver(servletContext);
 		templateResolver.setTemplateMode(TemplateMode.HTML);
-		
 		this.templateEngine = new TemplateEngine();
 		this.templateEngine.setTemplateResolver(templateResolver);
 		templateResolver.setSuffix(".html");
+		
 		connection = ConnectionHandler.getConnection(getServletContext());
 	}
 
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
+	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		//the path for any type of error
+		String loginpath = request.getServletContext().getContextPath() + "/HomePage";
 		
+		//this header is to prevent the browser caching the page during logout phase
 		response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
 		
 		HttpSession session = request.getSession();
 		
-		if (session.getAttribute("savedOrder") != null) {
-			session.removeAttribute("savedOrder");
-		}
-
+		//do not change nor delete the "savedOrder" object in the session here
+		
 		User user = (User) session.getAttribute("user");
 		
 		int roundId;
-		
-		
-		RegisteredStudentsDAO registeredStudentsDAO = new RegisteredStudentsDAO(connection);
-		
-		List<RegisteredStudent> infoStudent = new ArrayList<RegisteredStudent>();
-				
 		int studentId;
-		
 		try {
 			roundId = Integer.parseInt(request.getParameter("roundId"));
 			studentId = Integer.parseInt(request.getParameter("studentId"));
@@ -90,30 +79,38 @@ public class GoToEditMarkPage extends HttpServlet {
 			return;
 		}
 		
-		
-		/*
+		//creating the dao to do the checks before actually doing the real operations
+		GeneralChecksDAO generalChecksDAO = new GeneralChecksDAO(connection);
+		boolean isRoundOfThisProfessor;
+		boolean isStudentRegisteredToThisRound;
 		try {
-			//getting studentid from the session
-			studentid = Integer.parseInt(request.getParameter("studentId"));
-			//System.out.println(studentid);
-			request.getSession().setAttribute("selectedstudent", studentid);
+			isRoundOfThisProfessor = generalChecksDAO.isRoundOfThisProfessor(user.getId(), roundId);
+			isStudentRegisteredToThisRound = generalChecksDAO.isStudentRegisteredToThisRound(studentId, roundId);
 			
-			
-		} catch(NumberFormatException | NullPointerException e) {
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Incorrect param values");
+		} catch (SQLException e) {
+			session.setAttribute("errorMessage", "Failure in database retrieving information, please try again later");
+			response.sendRedirect(loginpath);
 			return;
 		}
-		*/
+		//checks for validity of the parameter passed in the URL
+		if (!isRoundOfThisProfessor || !isStudentRegisteredToThisRound) {
+			session.setAttribute("errorMessage", "Stop hacking, don't try to change parameters");
+			response.sendRedirect(loginpath);
+			return;
+		}
 		
 		
+		
+		RegisteredStudentsDAO registeredStudentsDAO = new RegisteredStudentsDAO(connection);
+		RegisteredStudent infoStudent;
 		try {
 			//extracting info about the clicked student (attending that round) 
 			
 			infoStudent = registeredStudentsDAO.findInfoStudentByRoundIDAndStudentID(roundId, studentId);
 			
-			
 		} catch (SQLException e) {
-			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Not possible to recover student information");
+			session.setAttribute("errorMessage", "Failure in database retrieving information, please try again later");
+			response.sendRedirect(loginpath);
 			return;
 		}
 		
@@ -123,22 +120,26 @@ public class GoToEditMarkPage extends HttpServlet {
 		ServletContext servletContext = getServletContext();
 		
 		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
-		ctx.setVariable("infostudent", infoStudent);
-		ctx.setVariable("studentId", studentId);
-		ctx.setVariable("roundId", roundId);
+		
+		ctx.setVariable("infoStudent", infoStudent);
 		
 		templateEngine.process(path, ctx, response.getWriter());
 		
 		
 	}
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
+	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
 		doGet(request, response);
-
+	}
+	
+	public void destroy() {
+		try {
+			if (connection != null) {
+				connection.close();
+			}
+		} catch (SQLException sqle) {
+		}
 	}
 }
 

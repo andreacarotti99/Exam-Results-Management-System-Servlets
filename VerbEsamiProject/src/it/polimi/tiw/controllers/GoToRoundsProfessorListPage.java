@@ -21,6 +21,8 @@ import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 import it.polimi.tiw.beans.Round;
 import it.polimi.tiw.beans.User;
+import it.polimi.tiw.dao.ExtraInfoDAO;
+import it.polimi.tiw.dao.GeneralChecksDAO;
 import it.polimi.tiw.dao.RoundsDAO;
 import it.polimi.tiw.utils.ConnectionHandler;
 
@@ -46,85 +48,77 @@ public class GoToRoundsProfessorListPage extends HttpServlet {
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		//the path for any type of error
+		String loginpath = request.getServletContext().getContextPath() + "/HomePage";
 		
 		//this header is to prevent the browser caching the page during logout phase
 		response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
 		
-		// If the user is not logged in (not present in session) redirect to the login
-		//String loginpath = getServletContext().getContextPath() + "/index.html";
 		HttpSession session = request.getSession();
 		
-		if (session.getAttribute("savedOrder") != null) {
-			session.removeAttribute("savedOrder");
-		}
-		//se arrivo alla pagina CoursesListPage in modi "diversi" e quindi la sessione è nuova oppure se nel db non si è trovato l'utente
-		//rimanda alla pagina di login
-		/*
-		if (session.isNew() || session.getAttribute("user") == null) {
-			response.sendRedirect(loginpath);
-			return;
-		}
-		commento queste righe perchè il controllo se la sessione è nuova o se lo user non è stato trovato lo effettuo
-		nei filtri (ricordandoci che ogni servlet su cui eseguo il controllo deve essere mappata nel web.xml)
-		*/
-		//se invece non è una sessione nuova e ho lo user ottenuto correttamente
+		//removing a possible object from the session that is placed there by the GoToRegisteredToRoundsPage servlet
+		session.removeAttribute("savedOrder");
+		
+		//no need to check the session variable 'user' because we are using filters
 		User user = (User) session.getAttribute("user");
-		RoundsDAO roundsDAO = new RoundsDAO(connection);
-		List<Round> rounds = new ArrayList<Round>();
-		boolean isTaughtByProfessor;
-		boolean classExists;
 		
 		// getting from the request the id of the clicked class from the list of classes
 		// that we passed as a parameter to the servlet in the html page ... @{/GetMissionDetails(classid=${c.classID})}
-		Integer classid = null;
+		int classId;
 		try {
-			classid = Integer.parseInt(request.getParameter("classid"));
+			classId = Integer.parseInt(request.getParameter("classId"));
 		} catch (NumberFormatException | NullPointerException e) {
-			// only for debugging e.printStackTrace();
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Incorrect param values");
+			session.setAttribute("errorMessage", "Stop hacking, don't try to change parameters");
+			response.sendRedirect(loginpath);
 			return;
 		}
 		
-
+		//creating the dao to do the checks before actually doing the real operations
+		GeneralChecksDAO generalChecksDAO = new GeneralChecksDAO(connection);
+		boolean isTaughtByProfessor;
 		try {
-			//get the classid from the request and the userid from the session
-			isTaughtByProfessor = roundsDAO.isClassTaughtByProfessor(user.getId(), classid);
-			classExists = roundsDAO.doesClassExists(classid);
+			isTaughtByProfessor = generalChecksDAO.isClassTaughtByProfessor(user.getId(), classId);
+			
+		} catch (SQLException e) {
+			session.setAttribute("errorMessage", "Failure in database retrieving information, please try again later");
+			response.sendRedirect(loginpath);
+			return;
+		}
+		
+		//checks for validity of the parameter passed in the URL
+		if (!isTaughtByProfessor) {
+			session.setAttribute("errorMessage", "Stop hacking, don't try to change parameters");
+			response.sendRedirect(loginpath);
+			return;
+		}
+		
+		
+		//real DAO to do the actual intended operation
+		RoundsDAO roundsDAO = new RoundsDAO(connection);
+		List<Round> rounds = new ArrayList<Round>();
+		ExtraInfoDAO extraInfoDAO = new ExtraInfoDAO(connection);
+		String className;
+		try {
 
 			//extracting the list of rounds of the professor
-			rounds = roundsDAO.findRoundsByProfessorAndClass(user.getId(), classid);
+			rounds = roundsDAO.findRoundsByProfessorAndClass(user.getId(), classId);
+			
+			className = extraInfoDAO.getClassName(classId);
+			
 		} catch (SQLException e) {
-			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Not possible to recover rounds");
+			session.setAttribute("errorMessage", "Failure in database retrieving information, please try again later");
+			response.sendRedirect(loginpath);
 			return;
 		}
-		
-		
-		//without this check we would have an empty list or a list of rounds but not of the right professor
-		if (isTaughtByProfessor == false) {
-			String path;
-			if (classExists == false) {
-				
-				session.setAttribute("errorMessage", "stop hacking, the classid you insered doesn't exist");
-				
-				path = getServletContext().getContextPath() + "/HomePage";
-				
-				response.sendRedirect(path);
-			}
-			else {
-				//this is the case where there is a class with the provided id (in the html or URL and the user doesn't attend this class)
-				session.setAttribute("errorMessage", "stop hacking, you don't teach this class");
-				
-				path = getServletContext().getContextPath() + "/HomePage";
-				response.sendRedirect(path);
-			}
-		}
-		
 		
 		// Redirect to the Courses List page and add missions to the parameters
 		String path = "/WEB-INF/prof/RoundsProfessorListPage.html";
 		ServletContext servletContext = getServletContext();
 		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
+		
 		ctx.setVariable("rounds", rounds);
+		ctx.setVariable("className", className);
+		
 		templateEngine.process(path, ctx, response.getWriter());
 	}
 
@@ -135,9 +129,10 @@ public class GoToRoundsProfessorListPage extends HttpServlet {
 
 	public void destroy() {
 		try {
-			ConnectionHandler.closeConnection(connection);
-		} catch (SQLException e) {
-			e.printStackTrace();
+			if (connection != null) {
+				connection.close();
+			}
+		} catch (SQLException sqle) {
 		}
 	}
 

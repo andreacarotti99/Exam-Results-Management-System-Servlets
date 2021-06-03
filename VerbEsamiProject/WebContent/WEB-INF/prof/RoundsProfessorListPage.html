@@ -13,14 +13,14 @@
 	
 	<h1>Welcome to the List of Rounds Page</h1>
 	<p th:text="${'Hello ' + session.user.name + ' ' + session.user.surname + ', you are a professor'}"></p>
-	<p th:text="'List of rounds in descending order for class: ' + (${rounds.size()>0} ? ${rounds[0].className})"></p>
+	<p th:text="'List of rounds in descending order for class: ' + ${className}"></p>
+	
 	
 	<table>
 		<thead>
 			<tr>
 				<th>Dates of the round</th>
-				<!-- <th> Date </th> -->
-				<!-- <th> Link </th> -->
+				
 			</tr>
 		</thead>
 		<tbody>
@@ -32,6 +32,8 @@
 			</tr>
 		</tbody>
 	</table>
+	
+	<p th:if="${rounds.size() == 0}">You have no rounds for this class</p>
 	
 </body>
 </html>

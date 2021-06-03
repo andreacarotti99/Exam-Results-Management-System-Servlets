@@ -28,13 +28,10 @@ public class RoundsDAO {
 			
 			try (ResultSet result = pstatement.executeQuery();) {
 				while (result.next()) {
-				
+					
 					Round round = new Round();
-					round.setRoundID(result.getInt("idround"));
+					round.setRoundId(result.getInt("idround"));
 					round.setDate(result.getDate("date"));
-					round.setClassID(result.getInt("idclass"));
-					round.setProfessorID(result.getInt("idprofessor"));
-					round.setClassName(result.getString("classname"));
 					rounds.add(round);
 				}
 			}
@@ -57,75 +54,13 @@ public class RoundsDAO {
 				while (result.next()) {
 				
 					Round round = new Round();
-					round.setRoundID(result.getInt("idround"));
+					round.setRoundId(result.getInt("idround"));
 					round.setDate(result.getDate("date"));
-					round.setClassID(result.getInt("a.idclass"));
-					round.setStudentID(result.getInt("idstudent"));
-					round.setClassName(result.getString("c.classname"));
 					rounds.add(round);
 				}
 			}
 		return rounds;	
 		}
 	}
-	
-	public boolean isClassAttendedByStudent(int studentId, int classId) throws SQLException {
-		int output;
-		
-		String query = "SELECT count(*) FROM attend WHERE idstudent = ? AND idclass = ?";
-		
-		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
-			pstatement.setInt(1, studentId);
-			pstatement.setInt(2, classId);
-			
-			try (ResultSet result = pstatement.executeQuery();) {
-				result.next();
-				output = result.getInt("count(*)");
-			}
-		}
-		
-		if (output == 1) return true;
-		else return false;
-	}
-	
-	public boolean doesClassExists(int classId)throws SQLException {
-		int output;
-		
-		String query = "SELECT count(*) FROM class WHERE idclass = ?";
-		
-		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
-			pstatement.setInt(1, classId);
-			
-			try (ResultSet result = pstatement.executeQuery();) {
-				result.next();
-				output = result.getInt("count(*)");
-			}
-		}
-		
-		if (output == 1) return true;
-		else return false;
-	}
-	
-	
-	
-	public boolean isClassTaughtByProfessor(int professorId, int classId) throws SQLException {
-		int output;
-		
-		String query = "SELECT count(*) FROM class WHERE idprofessor = ? AND idclass = ?";
-		
-		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
-			pstatement.setInt(1, professorId);
-			pstatement.setInt(2, classId);
-			
-			try (ResultSet result = pstatement.executeQuery();) {
-				result.next();
-				output = result.getInt("count(*)");
-			}
-		}
-		
-		if (output == 1) return true;
-		else return false;
-	}
-
 	
 }

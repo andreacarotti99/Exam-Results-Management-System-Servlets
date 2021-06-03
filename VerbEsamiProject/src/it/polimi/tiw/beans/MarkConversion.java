@@ -17,7 +17,7 @@ public class MarkConversion {
 		case 3:
 			return "skip next round";
 		case 31:
-			return "30 with honour";
+			return "30 with honor";
 		}
 		
 		return "Error";

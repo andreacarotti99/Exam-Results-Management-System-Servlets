@@ -19,8 +19,10 @@ import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
+import it.polimi.tiw.beans.SavedOrder;
 import it.polimi.tiw.beans.User;
 import it.polimi.tiw.dao.EditMarkDAO;
+import it.polimi.tiw.dao.GeneralChecksDAO;
 import it.polimi.tiw.utils.ConnectionHandler;
 
 @WebServlet("/EditMark")
@@ -51,83 +53,87 @@ public class EditMark extends HttpServlet {
 
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		//the path for any type of error
 		String loginpath = request.getServletContext().getContextPath() + "/HomePage";
 		
-		Integer newMark = null;
+		//this header is to prevent the browser caching the page during logout phase
+		response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
 		
-		HttpSession s = request.getSession();
-		User u = (User) s.getAttribute("user");
+		HttpSession session = request.getSession();
 		
-		/*
-		int roundid = (int) s.getAttribute("roundid");
+		//these lines are here to keep the same order of the table before clicking the button
+		SavedOrder savedOrder = (SavedOrder) session.getAttribute("savedOrder");
+		int clickedColumn = savedOrder.getClickedColumn();
+		savedOrder.checkLastClicked(clickedColumn);
+		session.setAttribute("savedOrder", savedOrder);
 		
-		int selectedStudent = (int) s.getAttribute("selectedstudent");
+		User user = (User) session.getAttribute("user");
 		
-		s.removeAttribute("selectedstudent");
-		s.removeAttribute("roundid");
-		
-		System.out.println(roundid);
-		System.out.println(selectedStudent);
-			*/
+		int newMark;
 		int roundId;
-		int selectedStudent;
-		
+		int studentId;
 		try {
 			roundId = Integer.parseInt(request.getParameter("roundId"));
-			selectedStudent = Integer.parseInt(request.getParameter("studentId"));
+			studentId = Integer.parseInt(request.getParameter("studentId"));
 			newMark = Integer.parseInt(request.getParameter("newMark"));
 			
 		}catch(NumberFormatException | NullPointerException e) {
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Incorrect param values");
-			return;
-		}
-		
-		
-		if (newMark >= 32 || newMark <= 0 || (newMark >= 4 && newMark <= 17)) {
-			s.setAttribute("errorMessage", "Don't try to input wrong marks");
+			session.setAttribute("errorMessage", "Stop hacking, don't try to change parameters");
 			response.sendRedirect(loginpath);
 			return;
 		}
-				
-		int userid = u.getId();
 		
-		EditMarkDAO editMarkDAO = new EditMarkDAO(connection);
-
+		if (newMark >= 32 || newMark <= 0 || (newMark >= 4 && newMark <= 17)) {
+			session.setAttribute("errorMessage", "Stop hacking, don't try to change parameters");
+			response.sendRedirect(loginpath);
+			return;
+		}
+		//creating the dao to do the checks before actually doing the real operations
+		GeneralChecksDAO generalChecksDAO = new GeneralChecksDAO(connection);
+		boolean isRoundOfThisProfessor;
+		boolean isStudentRegisteredToThisRound;
 		try {
-			
-			System.out.println("Replacing Mark in the database and changing state...");
-
-			editMarkDAO.createNewMark(newMark, selectedStudent, roundId);
-			editMarkDAO.changeToInserted(selectedStudent, roundId);
-
+			isRoundOfThisProfessor = generalChecksDAO.isRoundOfThisProfessor(user.getId(), roundId);
+			isStudentRegisteredToThisRound = generalChecksDAO.isStudentRegisteredToThisRound(studentId, roundId);
 			
 		} catch (SQLException e) {
-			// throw new ServletException(e);
-			response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Failure of changing mark in database");
+			session.setAttribute("errorMessage", "Failure in database retrieving information, please try again later");
+			response.sendRedirect(loginpath);
+			return;
+		}
+		//checks for validity of the parameter passed in the URL
+		if (!isRoundOfThisProfessor || !isStudentRegisteredToThisRound) {
+			session.setAttribute("errorMessage", "Stop hacking, don't try to change parameters");
+			response.sendRedirect(loginpath);
 			return;
 		}
 	
-		// return the user to the right view --> ERROR TO FIX HERE
+		
+		//this is the DAO that actually changes the db
+		EditMarkDAO editMarkDAO = new EditMarkDAO(connection);
+		try {
+
+			editMarkDAO.createNewMarkAndSetToInserted(newMark, studentId, roundId);
+			
+		} catch (SQLException e) {
+			session.setAttribute("errorMessage", "Failure in database retrieving information, please try again later");
+			response.sendRedirect(loginpath);
+			return;
+		}
+	
 		
 		String ctxpath = getServletContext().getContextPath();
-		String path = ctxpath + "/GoToRegisteredToRoundPage?roundId=" + roundId + "&lastClicked=1";
+		
+		String path = ctxpath + "/GoToRegisteredToRoundPage?roundId=" + roundId + "&lastClicked=" + clickedColumn;
 		response.sendRedirect(path);
-
-		
-		
-		System.out.println("Redirect was correct");
-
 	}
 
 	public void destroy() {
 		try {
 			if (connection != null) {
-				
 				connection.close();
-				
 			}
 		} catch (SQLException sqle) {
-		
 		}
 	}
 }

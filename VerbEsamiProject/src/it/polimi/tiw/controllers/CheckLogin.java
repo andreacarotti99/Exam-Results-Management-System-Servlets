@@ -38,7 +38,7 @@ public class CheckLogin extends HttpServlet {
 		//make the connection and to close it 
 		connection = ConnectionHandler.getConnection(getServletContext());
 		
-		//insantiating a context to make thymeleaf work
+		//instantiating a context to make thymeleaf work
 		ServletContext servletContext = getServletContext();
 		ServletContextTemplateResolver templateResolver = new ServletContextTemplateResolver(servletContext);
 		templateResolver.setTemplateMode(TemplateMode.HTML);
@@ -49,42 +49,36 @@ public class CheckLogin extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		//the path for any type of error
+		String loginpath = request.getServletContext().getContextPath() + "/HomePage";
 		
 		//this header is to prevent the browser caching the page during logout phase
 		response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+		
+		HttpSession session = request.getSession();
 				
 		//obtain and escape params
-		String usrn = null;
-		String pwd = null;
-		try {
-			//getting the parameters from the request because we filled the form and
-			//now we want to check if the parameters provided in the form are valid
-			usrn = StringEscapeUtils.escapeJava(request.getParameter("username"));
-			pwd = StringEscapeUtils.escapeJava(request.getParameter("pwd"));
-			if (usrn == null || pwd == null || usrn.isEmpty() || pwd.isEmpty()) {
-				throw new Exception("Missing or empty credential value");
-			}
-
-		} catch (Exception e) {
-			// for debugging only e.printStackTrace();
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing credential value");
+		String usrn = request.getParameter("username");
+		String pwd = request.getParameter("pwd");
+		
+		if (usrn == null || pwd == null || usrn.isEmpty() || pwd.isEmpty()) {
+			session.setAttribute("errorMessage", "Please input valid username and password");
+			response.sendRedirect(loginpath);
 			return;
 		}
 
+		
 		// query db to authenticate for user
 		UserDAO userDao = new UserDAO(connection);
 		User user = null;
 		try {
 			//we provide as parameters the credentials that we got from the form (more properly from the request)
 			//and we check in the db if the user is either valid or null
-			
-			
 			user = userDao.checkCredentials(usrn, pwd);
 			
-			
-			
 		} catch (SQLException e) {
-			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Not Possible to check credentials");
+			session.setAttribute("errorMessage", "Failure in database retrieving information, please try again later");
+			response.sendRedirect(loginpath);
 			return;
 		}
 
@@ -95,17 +89,14 @@ public class CheckLogin extends HttpServlet {
 		//if in the db we didn't find the user --> the user is null so we show a message saying incorrect values in the form
 		if (user == null) {
 			
-			HttpSession session = request.getSession();
-			session.setAttribute("errorMessage", "Incorrect username or password");
-			
-			path = getServletContext().getContextPath() + "/HomePage";
-			response.sendRedirect(path);
-			
+			session.setAttribute("errorMessage", "Username or password not valid");
+			response.sendRedirect(loginpath);
+			return;
 			
 		} else {
 			//if in the db we actually found some user with the right credentials --> we "put" in the session the user Bean from the db and the attribute we 
 			//decided to use to get it in future is "user"
-			request.getSession().setAttribute("user", user);
+			session.setAttribute("user", user);
 			String target;
 			
 			//according to the isProfessor variable of the user that is trying to log into the application we will
@@ -126,9 +117,10 @@ public class CheckLogin extends HttpServlet {
 
 	public void destroy() {
 		try {
-			ConnectionHandler.closeConnection(connection);
-		} catch (SQLException e) {
-			e.printStackTrace();
+			if (connection != null) {
+				connection.close();
+			}
+		} catch (SQLException sqle) {
 		}
 	}
 }

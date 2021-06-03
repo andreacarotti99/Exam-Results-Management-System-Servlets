@@ -12,9 +12,9 @@
 		Password: <input type="password" name="pwd" required><br>
 		<input type="submit" value="login">
 		
-		<!-- sarebbe corretto farlo processare da un template e togliere questo pezzo di html che altrimenti esce comunque nella schermata -->
-		<p th:text=" ${errorMsg}"></p>
 	</form>
+	
+	<p th:text=" ${errorMsg}"></p>
 
 </body>
 </html>

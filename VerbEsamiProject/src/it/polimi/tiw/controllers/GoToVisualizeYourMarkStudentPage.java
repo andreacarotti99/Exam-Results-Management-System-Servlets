@@ -73,7 +73,7 @@ public class GoToVisualizeYourMarkStudentPage extends HttpServlet {
 		
 		
 	
-		List<RegisteredStudent> infoStudent = new ArrayList<RegisteredStudent>();
+		
 		Integer studentid = null;
 		
 		
@@ -93,6 +93,7 @@ public class GoToVisualizeYourMarkStudentPage extends HttpServlet {
 		
 		
 		RegisteredStudentsDAO registeredStudentsDAO = new RegisteredStudentsDAO(connection);
+		RegisteredStudent infoStudent;
 		
 		try {
 			//extracting info about the clicked student (attending that round) 

@@ -22,6 +22,7 @@ import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 import it.polimi.tiw.beans.User;
+import it.polimi.tiw.dao.GeneralChecksDAO;
 import it.polimi.tiw.dao.VerbalizationDAO;
 import it.polimi.tiw.utils.ConnectionHandler;
 
@@ -33,7 +34,7 @@ public class VerbalizeMark extends HttpServlet {
 
 	public VerbalizeMark() {
 		super();
-		// TODO Auto-generated constructor stub
+		
 	}
 
 	public void init() throws ServletException {
@@ -43,8 +44,8 @@ public class VerbalizeMark extends HttpServlet {
 		this.templateEngine = new TemplateEngine();
 		this.templateEngine.setTemplateResolver(templateResolver);
 		templateResolver.setSuffix(".html");
+		
 		connection = ConnectionHandler.getConnection(getServletContext());
-	
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -53,49 +54,83 @@ public class VerbalizeMark extends HttpServlet {
 
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
-		
+		//the path for any type of error
+		String loginpath = request.getServletContext().getContextPath() + "/HomePage";
 				
-		HttpSession s = request.getSession();
+		//this header is to prevent the browser caching the page during logout phase
+		response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+				
+		HttpSession session = request.getSession();
 		
-		if (s.getAttribute("savedOrder") != null) {
-			s.removeAttribute("savedOrder");
-		}
+		//removing a possible object from the session that is placed there by the GoToRegisteredToRoundsPage servlet
+		session.removeAttribute("savedOrder");
 		
-		
-		User u = (User) s.getAttribute("user");
-		
-		/*
-		int roundid = (int) s.getAttribute("roundid");
-				*/
+		//no need to check the session variable 'user' because we are using filters
+		User user = (User) session.getAttribute("user");
 		
 		int roundId;
-		
 		try {
 			roundId = Integer.parseInt(request.getParameter("roundId"));
 		}catch(NumberFormatException | NullPointerException e) {
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Incorrect param values");
+			session.setAttribute("errorMessage", "Stop hacking, don't try to change parameters");
+			response.sendRedirect(loginpath);
+			return;
+		}
+		//creating the dao to do the checks before actually doing the real operations
+		GeneralChecksDAO generalChecksDAO = new GeneralChecksDAO(connection);
+		boolean isRoundOfThisProfessor;
+		boolean isRoundVerbalizable;
+		try {
+			connection.setAutoCommit(true);
+			isRoundOfThisProfessor = generalChecksDAO.isRoundOfThisProfessor(user.getId(), roundId);
+			isRoundVerbalizable = generalChecksDAO.isRoundVerbalizable(roundId);
+			
+		} catch (SQLException e) {
+			session.setAttribute("errorMessage", "Failure in database retrieving information, please try again later");
+			response.sendRedirect(loginpath);
+			return;
+		}
+		//checks for validity of the parameter passed in the URL
+		if (!isRoundOfThisProfessor) {
+			session.setAttribute("errorMessage", "Stop hacking, don't try to change parameters");
+			response.sendRedirect(loginpath);
+			return;
+		}
+		if (!isRoundVerbalizable) {
+			//if round is not verbalizable then redirect to GoToRegisteredToRoundPage with custom error string
+			session.setAttribute("errorMessage", "There are no votes to verbalize");
+			response.sendRedirect(request.getServletContext().getContextPath() + "/GoToRegisteredToRoundPage?roundId=" + roundId + "&lastClicked=1");
 			return;
 		}
 		
-		int userid = u.getId();
 		
+		//This is the dao that creates the verbal
 		VerbalizationDAO verbalizationDAO = new VerbalizationDAO(connection);
-
-		
-		
 		try {
-			//FARE TUTTO COME UNA UNICA TRANSAZIONE!!!!!!!!!!!!!!!!!
+			//we need to create a transaction because the db gets modified with multiple queries
+			connection.setAutoCommit(false);
 			
-			Timestamp date = verbalizationDAO.createVerbalFromStatePubblicatoOrRifiutato(roundId);
-			Integer newVerbalId = verbalizationDAO.getTuplaGivenIdRoundAndTimestamp(roundId);
-			verbalizationDAO.updateNewVerbalIdRegistered(roundId, newVerbalId);
-			verbalizationDAO.changeStatusToVerbalizzato(roundId);
-
+			verbalizationDAO.createNewVerbal(roundId);
+			
+			int newVerbalId = verbalizationDAO.getVerbalIdOfTheNewVerbal(roundId);
+			
+			verbalizationDAO.setRejectedMarksToFailedMark(roundId);
+			
+			verbalizationDAO.updateNewVerbalIdRegisteredAndSetVerbalized(roundId, newVerbalId);
+			
+			connection.commit();
 			
 		} catch (SQLException e) {
-			// throw new ServletException(e);
-			response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Failure of editing date for verbalization in database");
+			try {
+				connection.rollback();
+			} catch (SQLException e1) {
+				System.out.println("Fatal error during rollback");
+				session.setAttribute("errorMessage", "Failure in database retrieving information, please try again later");
+				response.sendRedirect(loginpath);
+				return;
+			}
+			session.setAttribute("errorMessage", "Failure in database retrieving information, please try again later");
+			response.sendRedirect(loginpath);
 			return;
 		}
 			
@@ -103,8 +138,6 @@ public class VerbalizeMark extends HttpServlet {
 		String ctxpath = getServletContext().getContextPath();
 		String path = ctxpath + "/GoToVerbalPage?roundId=" + roundId;
 		response.sendRedirect(path);
-		
-		System.out.println("Redirect was correct");
 
 	}
 

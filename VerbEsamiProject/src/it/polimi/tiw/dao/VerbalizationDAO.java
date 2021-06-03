@@ -28,30 +28,18 @@ public class VerbalizationDAO {
 	}
 
 	/*
-	 * 1) creo un verbale in verbal con id autoincrement e data con timestamp e idround quello passato come parametro
-	 * 2) seleziono la tupla con quel timestamp e quell'idround da verbal
-	 * 3) faccio update nella tabella registred con quell'id autoincrement in quelli che hanno stato 2 o 3
-	 * 4) cambio lo stato di quelli che han stato 2 o 3 in 4
+	 * 1) create a new verbal in the db table verbal
+	 * 2) get the verbalId assigned automatically by the db upon creation
+	 * 3) set the rejected marks to failed
+	 * 4) set all rejected or published marks to verbalized and assign the verbalId to them
 	 */
 
 
+
 	//4
-	public void changeStatusToVerbalizzato(Integer idround) throws SQLException {
+	public void updateNewVerbalIdRegisteredAndSetVerbalized(Integer idround, Integer newVerbalId) throws SQLException {
 
-		String query = "UPDATE registered SET state = 4 where idround = ? and (state = 2 or state = 3)";
-	
-		try (PreparedStatement pstatement = con.prepareStatement(query);) {
-
-			pstatement.setInt(1, idround);
-		
-			pstatement.executeUpdate();
-		}	
-	}
-
-	//3
-	public void updateNewVerbalIdRegistered(Integer idround, Integer newVerbalId) throws SQLException {
-
-		String query = "UPDATE registered SET idverbal = ? where idround = ? and (state = 2 or state = 3)";
+		String query = "UPDATE registered SET idverbal = ?, state = 4 where idround = ? and (state = 2 or state = 3)";
 	
 		try (PreparedStatement pstatement = con.prepareStatement(query);) {
 			
@@ -64,41 +52,47 @@ public class VerbalizationDAO {
 	}
 	
 	
+	//3
+	public void setRejectedMarksToFailedMark(int idRound) throws SQLException {
+		
+		String query = "UPDATE registered SET mark = 2 WHERE idround = ? AND state = 3";
+		
+		try (PreparedStatement pstatement = con.prepareStatement(query);) {
+			pstatement.setInt(1, idRound);
+		
+			pstatement.executeUpdate();
+		}
+	}
+	
+	
+	
+	
 	//2
-	public int getTuplaGivenIdRoundAndTimestamp(Integer idround) throws SQLException {
-		int verbalid = 0;
+	public int getVerbalIdOfTheNewVerbal(Integer idround) throws SQLException {
+		
 		String query2 = "SELECT * FROM verbal WHERE idround = ? ORDER BY idverbal DESC"; 
-		//così scorriamo tutte le tuple fino all'ultima e la salviamo
 
 		try (PreparedStatement pstatement = con.prepareStatement(query2);) {
 			pstatement.setInt(1, idround);
-			
-		
+				
 			try (ResultSet result = pstatement.executeQuery();) {
 				if (result.next()) {
-					
-					verbalid = result.getInt("idverbal");
-					
-					//System.out.println("verbalid: " + verbalid);
-
-					
+					return result.getInt("idverbal");
+				}
+				else {
+					//this is used id a user manually calls the GoToVerbalPage servlet without having ever created a verbal
+					return -1;
 				}
 			}
-			
-			return verbalid;
 			
 		}
 		
 	}
 
 
-	//CHIEDEREEEEEE DATA SE SERVE
-	public Timestamp createVerbalFromStatePubblicatoOrRifiutato(Integer idround) throws SQLException {
-		Verbal verbal = new Verbal();
+	//1
+	public void createNewVerbal(Integer idround) throws SQLException {
 		Timestamp date = new Timestamp(new Date().getTime());
-		
-		//System.out.println("First part: insert into db the new verbal and the timestamp...");
-		//PRIMA PARTE DELLA QUERY
 		
 		String query = "INSERT INTO verbal (dateverbal, idround) VALUE (?, ?)";
 		
@@ -106,10 +100,8 @@ public class VerbalizationDAO {
 			pstatement.setTimestamp(1, date);
 			pstatement.setInt(2, idround);
 			pstatement.executeUpdate();
-			//ystem.out.println("First part correct...");
 		}
 		
-		return date;
 	}
 	
 	

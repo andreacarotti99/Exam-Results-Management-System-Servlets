@@ -30,7 +30,6 @@ public class ClassesDAO {
 					Classe classe = new Classe();
 					classe.setClassID(result.getInt("idclass"));
 					classe.setClassName(result.getString("classname"));
-					classe.setProfessorID(result.getInt("idprofessor"));
 					classes.add(classe);
 					
 				}
@@ -54,7 +53,6 @@ public class ClassesDAO {
 					Classe classe = new Classe();
 					classe.setClassID(result.getInt("idclass"));
 					classe.setClassName(result.getString("classname"));
-					classe.setProfessorID(result.getInt("idprofessor"));
 					classes.add(classe);
 					
 				}

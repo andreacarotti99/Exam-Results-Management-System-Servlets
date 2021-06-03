@@ -21,16 +21,12 @@ public class HomePage extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private TemplateEngine templateEngine;
        
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
+    
     public HomePage() {
         super();
-        // TODO Auto-generated constructor stub
     }
     
     public void init() throws ServletException {
-    	
     	//thymeleaf initialization
     	ServletContext servletContext = getServletContext();
 		ServletContextTemplateResolver templateResolver = new ServletContextTemplateResolver(servletContext);
@@ -40,38 +36,32 @@ public class HomePage extends HttpServlet {
 		templateResolver.setSuffix(".html");
     }
 
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
+	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		//this header is to prevent the browser caching the page during logout phase
 		response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
 		
 		HttpSession session = request.getSession();
 		
-		if (session.getAttribute("user") != null) {
-			session.removeAttribute("user");
-		}
-		if (session.getAttribute("savedOrder") != null) {
-			session.removeAttribute("savedOrder");
-		}
-		
 		String path = "/WEB-INF/index.html";
 		ServletContext servletContext = getServletContext();
 		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
 		
+		//printing custom message in the login/index page, usually used when error occurred
 		if(session.getAttribute("errorMessage") != null) {
 			ctx.setVariable("errorMsg", session.getAttribute("errorMessage"));
 			session.removeAttribute("errorMessage");
 		}
+		
+		//removing the two possible objects saved in the session
+		session.invalidate();
+		
 		templateEngine.process(path,  ctx, response.getWriter());
 	}
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
+	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+		
 		doGet(request, response);
 	}
 

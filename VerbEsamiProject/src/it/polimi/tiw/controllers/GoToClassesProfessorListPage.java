@@ -46,31 +46,38 @@ public class GoToClassesProfessorListPage extends HttpServlet {
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		//the path for any type of error
+		String loginpath = request.getServletContext().getContextPath() + "/HomePage";
+		
 		//this header is to prevent the browser caching the page during logout phase
 		response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
 		
 		HttpSession session = request.getSession();
-		if (session.getAttribute("savedOrder") != null) {
-			session.removeAttribute("savedOrder");
-		}
+		
+		//removing a possible object from the session that is placed there by the GoToRegisteredToRoundsPage servlet
+		session.removeAttribute("savedOrder");
+		
 
-		//se invece ho trovato nel db chi corrisponde a quanto scritto nella form istanzio un CourseDAO
+		//no need to check the session variable 'user' because we are using filters
 		User user = (User) session.getAttribute("user");
+		
 		ClassesDAO classesDAO = new ClassesDAO(connection);
 		List<Classe> classes = new ArrayList<Classe>();
-
 		try {
 			classes = classesDAO.findClassesByProfessorId(user.getId());
 		} catch (SQLException e) {
-			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Not possible to recover classes");
+			session.setAttribute("errorMessage", "Failure in database retrieving information, please try again later");
+			response.sendRedirect(loginpath);
 			return;
 		}
 
-		// Redirect to the Courses List page and add missions to the parameters
+		// Redirect to the Courses List page and add missions to the parameters for thymeleaf
 		String path = "/WEB-INF/prof/ClassesProfessorListPage.html";
 		ServletContext servletContext = getServletContext();
 		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
+		
 		ctx.setVariable("classes", classes);
+		
 		templateEngine.process(path, ctx, response.getWriter());
 	}
 
@@ -81,9 +88,10 @@ public class GoToClassesProfessorListPage extends HttpServlet {
 
 	public void destroy() {
 		try {
-			ConnectionHandler.closeConnection(connection);
-		} catch (SQLException e) {
-			e.printStackTrace();
+			if (connection != null) {
+				connection.close();
+			}
+		} catch (SQLException sqle) {
 		}
 	}
 

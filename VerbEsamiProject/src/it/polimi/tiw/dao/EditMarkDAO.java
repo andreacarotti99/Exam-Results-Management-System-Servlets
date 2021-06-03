@@ -24,9 +24,9 @@ public class EditMarkDAO {
 	}
 
 
-	public void createNewMark(Integer newMark, Integer idstudent, Integer idround) throws SQLException {		
+	public void createNewMarkAndSetToInserted(Integer newMark, Integer idstudent, Integer idround) throws SQLException {		
 		
-		String query = "UPDATE registered SET mark = ? where idstudent = ? and idround = ?";
+		String query = "UPDATE registered SET mark = ?, state = 1 where idstudent = ? and idround = ?";
 		
 		try (PreparedStatement pstatement = con.prepareStatement(query);) {
 			pstatement.setInt(1, newMark);
@@ -35,19 +35,6 @@ public class EditMarkDAO {
 			pstatement.executeUpdate();
 		}
 	
-	}
-	
-	public void changeToInserted(Integer idstudent, Integer idround) throws SQLException {		
-
-		String query = "UPDATE registered SET state = 1 where idstudent = ? and idround = ?";
-		
-		try (PreparedStatement pstatement = con.prepareStatement(query);) {
-
-			pstatement.setInt(1, idstudent);
-			pstatement.setInt(2, idround);
-			
-			pstatement.executeUpdate();
-		}
 	}
 
 	

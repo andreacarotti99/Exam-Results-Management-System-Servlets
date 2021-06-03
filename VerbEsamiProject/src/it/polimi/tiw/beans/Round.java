@@ -4,59 +4,32 @@ import java.util.Date;
 
 public class Round {
 
-	private int roundID;
+	private int roundId;
 	private Date date;
-	private int classID;
 	private String className;
-	private int professorID;
-	private int studentID;
 	
-	public int getStudentID() {
-		return this.studentID;
-	}
 	
-	public int getProfessorID() {
-		return this.professorID;
-	}
-	
-	public int getRoundID() {
-		return this.roundID;
+	public int getRoundId() {
+		return roundId;
 	}
 	
 	public Date getDate() {
-		return this.date;
-	}
-	
-	public int getClassID() {
-		return this.classID;
+		return date;
 	}
 	
 	public String getClassName() {
-		return this.className;
-	}
-	
-	public void setStudentID(int studentID) {
-		this.studentID = studentID;
-	}
-	
-	public void setProfessorID(int professorID) {
-		this.professorID = professorID;
-	}
-	
-	public void setClassID (int classID) {
-		this.classID = classID;
-	}
-	
-	public void setClassName (String className) {
-		this.className = className;
+		return className;
 	}
 	
 	public void setDate(Date date) {
 		this.date = date;
 	}
-	public void setRoundID(int roundID) {
-		this.roundID = roundID;
+	public void setRoundId(int roundId) {
+		this.roundId = roundId;
 	}
 	
+	public void setClassName(String className) {
+		this.className = className;
+	}
 	
 }

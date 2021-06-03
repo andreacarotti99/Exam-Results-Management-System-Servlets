@@ -1,38 +1,38 @@
 package it.polimi.tiw.beans;
 
 public class SavedOrder {
-	private boolean ordineCrescente;
+	private boolean ascendantOrder;
 	private int clickedColumn;
 	
 	public SavedOrder() {
-		ordineCrescente = true;
+		ascendantOrder = true;
 		clickedColumn = 1;
 	}
 	
-	public void invertiOrdine() {
-		if (ordineCrescente == true) {
-			ordineCrescente = false;
+	public void invertOrder() {
+		if (ascendantOrder == true) {
+			ascendantOrder = false;
 		}
 		else {
-			ordineCrescente = true;
+			ascendantOrder = true;
 		}
 	}
 	
 	
-	//I get lastclicked from the request parameter and I execute the function before any kind of search in the db
-	public void checkLastClicked(int lastClicked) {
-		if(clickedColumn == lastClicked) {
-			invertiOrdine();
+	//this method saves the correct order info based on the clicked column from the user and the last order that was displayed
+	public void checkLastClicked(int newClicked) {
+		if(clickedColumn == newClicked) {
+			invertOrder();
 		}
-		else if (clickedColumn != lastClicked){
-			this.clickedColumn = lastClicked;
-			this.ordineCrescente = true;
+		else if (clickedColumn != newClicked){
+			this.clickedColumn = newClicked;
+			this.ascendantOrder = true;
 		}
 	}
 	
 	
-	public boolean getOrdineCrescente() {
-		return this.ordineCrescente;
+	public boolean isAscendantOrder() {
+		return this.ascendantOrder;
 	}
 	
 	public int getClickedColumn() {

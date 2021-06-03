@@ -21,6 +21,7 @@ import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 import it.polimi.tiw.beans.Round;
 import it.polimi.tiw.beans.User;
+import it.polimi.tiw.dao.GeneralChecksDAO;
 import it.polimi.tiw.dao.RoundsDAO;
 import it.polimi.tiw.utils.ConnectionHandler;
 
@@ -66,9 +67,9 @@ public class GoToRoundsStudentListPage extends HttpServlet {
 		//se invece non è una sessione nuova e ho lo user ottenuto correttamente
 		User user = (User) session.getAttribute("user");
 		RoundsDAO roundsDAO = new RoundsDAO(connection);
+		GeneralChecksDAO generalChecksDAO = new GeneralChecksDAO(connection);
 		List<Round> rounds = new ArrayList<Round>();
 		boolean isAttendedByStudent = false;
-		boolean classExists = false;
 		
 		
 		// getting from the request the id of the clicked class from the list of classes
@@ -87,10 +88,9 @@ public class GoToRoundsStudentListPage extends HttpServlet {
 			//checks if the user hasn't tried to hack so for example isattendedbystudent is false when the 
 			//query doesn't have any student in it (if I edit the HTML file or through the URL I make a request for a class and the user
 			//associated doesn't attend any class with that id)
-			isAttendedByStudent = roundsDAO.isClassAttendedByStudent(user.getId(), classid);
+			isAttendedByStudent = generalChecksDAO.isClassAttendedByStudent(user.getId(), classid);
 			
 			//check if the provided class is in the db (is false when requesting a class not in the db)
-			classExists = roundsDAO.doesClassExists(classid);
 			
 			rounds = roundsDAO.findRoundsByStudentAndClass(user.getId(), classid);
 		} catch (SQLException e) {
@@ -101,19 +101,10 @@ public class GoToRoundsStudentListPage extends HttpServlet {
 		//checks if the user hasn't tried to hack
 		if (isAttendedByStudent == false) {
 			String path;
-			if (classExists == false) {
-				session.setAttribute("errorMessage", "stop hacking, the classid you insered doesn't exist");
-				
-				path = getServletContext().getContextPath() + "/HomePage";
-				response.sendRedirect(path);
-			}
-			else {
-				//this is the case where there is a class with the provided id (in the html or URL and the user doesn't attend this class)
-				session.setAttribute("errorMessage", "stop hacking, you aren't attending this class");
-				
-				path = getServletContext().getContextPath() + "/HomePage";
-				response.sendRedirect(path);
-			}
+			session.setAttribute("errorMessage", "stop hacking, the classid you insered doesn't exist");
+			
+			path = getServletContext().getContextPath() + "/HomePage";
+			response.sendRedirect(path);
 		}
 
 		// Redirect to the Courses List page and add missions to the parameters
