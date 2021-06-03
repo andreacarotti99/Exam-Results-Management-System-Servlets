@@ -13,27 +13,26 @@
 	
 	<h1>Welcome to the List of Rounds Page</h1>
 	<p th:text="${'Hello ' + session.user.name + ' ' + session.user.surname + ', you are a student'}"></p>
-	<p th:text="'List of rounds in descending order for the class: ' + (${rounds.size()>0} ? ${rounds[0].className})"></p>
+	<p th:text="'List of rounds in descending order for the class: ' + ${className}"></p>
 
-	<table>
-		<thead>
-			<tr>
-				<th>Dates of the round</th>
-				<!-- <th> Date </th> -->
-				<!-- <th> Link </th> -->
-			</tr>
-		</thead>
-		<tbody>
-			<tr th:each="r : ${rounds}">
-				<td th:text="${r.date}"></td>
-				
-				<!--  <td th:text="${c.studentID}"></td></td>  -->
-				<!--     <td><a th:href="@{/GetMissionDetails(missionid=${m.id})}">Details</a></td>     -->
-				<td><a th:href="@{/GoToVisualizeYourMarkStudentPage(roundid=${r.roundID})}">Details</a></td>
-				
-			</tr>
-		</tbody>
-	</table>
+	<div th:if="${rounds.size() != 0}">
+		<table>
+			<thead>
+				<tr>
+					<th>Dates of the round</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="r : ${rounds}">
+					<td th:text="${r.date}"></td>
+					
+					<td><a th:href="@{/GoToVisualizeYourMarkStudentPage(roundid=${r.roundID})}">Details</a></td>
+					
+				</tr>
+			</tbody>
+		</table>
+	</div>
 	
+	<p th:if="${rounds.size() == 0}">There are no rounds for this class</p>
 </body>
 </html>

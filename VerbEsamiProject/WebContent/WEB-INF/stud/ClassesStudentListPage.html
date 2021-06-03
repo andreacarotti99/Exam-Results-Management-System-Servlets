@@ -3,7 +3,7 @@
 
 <head>
 <meta charset="ISO-8859-1">
-<title>List of courses Page</title>
+<title>List of classes Page</title>
 </head>
 
 
@@ -11,32 +11,32 @@
 
 	<a href="HomePage">logout</a>
 	
-	<h1>Welcome to the List of Courses Page</h1>
-	<p th:text="${'Hello ' + session.user.name + ' ' + session.user.surname + ', you are a student, here you can see your courses'}"></p>
-	<p> List of courses in descending order </p>
+	<h1>Welcome to the List of Classes Page</h1>
+	<p th:text="${'Hello ' + session.user.name + ' ' + session.user.surname + ', you are a student, here you can see your classes'}"></p>
+	<p> List of classes in descending order </p>
 
-	<table>
-		<thead>
-			<tr>
-				<th>Name of the course</th>
-				<!-- <th> Date </th> -->
-				<!-- <th> Link </th> -->
-			</tr>
-		</thead>
-		<tbody>
-			<tr th:each="c : ${classes}">
-				<td th:text="${c.className}"></td>
-				<!--  <td th:text="${c.professorID}"></td></td>  -->
-
-				
-				<!--     <td><a th:href="@{/GetMissionDetails(missionid=${m.id})}">Details</a></td>     -->
-				<td><a th:href="@{/GoToRoundsStudentListPage(classid=${c.classID})}">Details</a></td>
-				
-				
-			</tr>
-		</tbody>
-	</table>
+	<div th:if="${classes.size() != 0}">
+		<table>
+			<thead>
+				<tr>
+					<th>Name of the class</th>
+					<!-- <th> Date </th> -->
+					<!-- <th> Link </th> -->
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="c : ${classes}">
+					<td th:text="${c.className}"></td>
+					
+					<td><a th:href="@{/GoToRoundsStudentListPage(classid=${c.classID})}">Details</a></td>
+					
+					
+				</tr>
+			</tbody>
+		</table>
+	</div>	
 	
+	<p th:if="${classes.size() == 0}">You aren't attending any classes</p>
 	
 </body>
 </html>

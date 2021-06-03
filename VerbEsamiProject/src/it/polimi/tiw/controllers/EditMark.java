@@ -92,9 +92,11 @@ public class EditMark extends HttpServlet {
 		GeneralChecksDAO generalChecksDAO = new GeneralChecksDAO(connection);
 		boolean isRoundOfThisProfessor;
 		boolean isStudentRegisteredToThisRound;
+		boolean isMarkEditable;
 		try {
 			isRoundOfThisProfessor = generalChecksDAO.isRoundOfThisProfessor(user.getId(), roundId);
 			isStudentRegisteredToThisRound = generalChecksDAO.isStudentRegisteredToThisRound(studentId, roundId);
+			isMarkEditable = generalChecksDAO.isMarkEditable(roundId, studentId);
 			
 		} catch (SQLException e) {
 			session.setAttribute("errorMessage", "Failure in database retrieving information, please try again later");
@@ -102,7 +104,7 @@ public class EditMark extends HttpServlet {
 			return;
 		}
 		//checks for validity of the parameter passed in the URL
-		if (!isRoundOfThisProfessor || !isStudentRegisteredToThisRound) {
+		if (!isRoundOfThisProfessor || !isStudentRegisteredToThisRound || !isMarkEditable) {
 			session.setAttribute("errorMessage", "Stop hacking, don't try to change parameters");
 			response.sendRedirect(loginpath);
 			return;

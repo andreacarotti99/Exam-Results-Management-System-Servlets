@@ -25,6 +25,7 @@ import it.polimi.tiw.beans.Round;
 import it.polimi.tiw.beans.SavedOrder;
 import it.polimi.tiw.beans.User;
 import it.polimi.tiw.dao.ClassesDAO;
+import it.polimi.tiw.dao.ExtraInfoDAO;
 import it.polimi.tiw.dao.GeneralChecksDAO;
 import it.polimi.tiw.dao.RegisteredStudentsDAO;
 
@@ -75,7 +76,8 @@ public class GoToEditMarkPage extends HttpServlet {
 			studentId = Integer.parseInt(request.getParameter("studentId"));
 			
 		}catch(NumberFormatException | NullPointerException e) {
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Incorrect param values");
+			session.setAttribute("errorMessage", "Stop hacking, don't try to change parameters");
+			response.sendRedirect(loginpath);
 			return;
 		}
 		
@@ -103,10 +105,14 @@ public class GoToEditMarkPage extends HttpServlet {
 		
 		RegisteredStudentsDAO registeredStudentsDAO = new RegisteredStudentsDAO(connection);
 		RegisteredStudent infoStudent;
+		ExtraInfoDAO extraInfoDAO = new ExtraInfoDAO(connection);
+		Round roundInfo;
 		try {
 			//extracting info about the clicked student (attending that round) 
 			
 			infoStudent = registeredStudentsDAO.findInfoStudentByRoundIDAndStudentID(roundId, studentId);
+			
+			roundInfo = extraInfoDAO.getRoundInfo(roundId);
 			
 		} catch (SQLException e) {
 			session.setAttribute("errorMessage", "Failure in database retrieving information, please try again later");
@@ -122,6 +128,7 @@ public class GoToEditMarkPage extends HttpServlet {
 		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
 		
 		ctx.setVariable("infoStudent", infoStudent);
+		ctx.setVariable("roundInfo", roundInfo);
 		
 		templateEngine.process(path, ctx, response.getWriter());
 		

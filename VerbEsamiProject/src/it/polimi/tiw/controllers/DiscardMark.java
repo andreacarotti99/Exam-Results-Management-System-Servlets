@@ -21,7 +21,7 @@ import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 import it.polimi.tiw.beans.User;
 import it.polimi.tiw.dao.EditMarkDAO;
-
+import it.polimi.tiw.dao.GeneralChecksDAO;
 import it.polimi.tiw.utils.ConnectionHandler;
 
 @WebServlet("/DiscardMark")
@@ -32,7 +32,7 @@ public class DiscardMark extends HttpServlet {
 
 	public DiscardMark() {
 		super();
-		// TODO Auto-generated constructor stub
+		
 	}
 
 	public void init() throws ServletException {
@@ -52,49 +52,71 @@ public class DiscardMark extends HttpServlet {
 
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		//the path for any type of error
+		String loginpath = request.getServletContext().getContextPath() + "/HomePage";
 				
-		HttpSession s = request.getSession();
-		User u = (User) s.getAttribute("user");
-		//int roundid = (int) s.getAttribute("roundid");
-		int roundid = Integer.parseInt(request.getParameter("roundid"));
-		int userid = u.getId();
+		//this header is to prevent the browser caching the page during logout phase
+		response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+		
+		HttpSession session = request.getSession();
+		
+		//no need to check the session variable 'user' because we are using filters
+		User user = (User) session.getAttribute("user");
 		
 		
-		EditMarkDAO editMarkDAO = new EditMarkDAO(connection);
-		
-
+		int roundId;
 		try {
+			roundId = Integer.parseInt(request.getParameter("roundId"));
 			
-			System.out.println("Changing status in the database...");
-			
-			editMarkDAO.changeStatusToRejected(userid, roundid);
-			
-			//editMarkDAO.changeStatusToPubblicato(roundid);
-			
+		}catch(NumberFormatException | NullPointerException e) {
+			session.setAttribute("errorMessage", "Stop hacking, don't try to change parameters");
+			response.sendRedirect(loginpath);
+			return;
+		}
+		//creating the dao to do the checks before actually doing the real operations
+		GeneralChecksDAO generalChecksDAO = new GeneralChecksDAO(connection);
+		boolean isStudentRegisteredToThisRound;
+		boolean isMarkRejectable;
+		try {
+			isStudentRegisteredToThisRound = generalChecksDAO.isStudentRegisteredToThisRound(user.getId(), roundId);
+			isMarkRejectable = generalChecksDAO.isMarkRejectable(roundId, user.getId());
 			
 		} catch (SQLException e) {
-			// throw new ServletException(e);
-			response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Failure of rejecting mark in database");
+			session.setAttribute("errorMessage", "Failure in database retrieving information, please try again later");
+			response.sendRedirect(loginpath);
+			return;
+		}
+		//checks for validity of the parameter passed in the URL
+		if (!isStudentRegisteredToThisRound || !isMarkRejectable) {
+			session.setAttribute("errorMessage", "Stop hacking, don't try to change parameters");
+			response.sendRedirect(loginpath);
+			return;
+		}
+		
+		//this is the dao that actually changes the db information
+		EditMarkDAO editMarkDAO = new EditMarkDAO(connection);
+		try {
+			
+			editMarkDAO.changeStatusToRejected(user.getId(), roundId);
+			
+		} catch (SQLException e) {
+			session.setAttribute("errorMessage", "Failure in database retrieving information, please try again later");
+			response.sendRedirect(loginpath);
 			return;
 		}
 			
 		String ctxpath = getServletContext().getContextPath();
-		String path = ctxpath + "/GoToVisualizeYourMarkStudentPage?roundid=" + roundid;
+		String path = ctxpath + "/GoToVisualizeYourMarkStudentPage?roundid=" + roundId;
 		response.sendRedirect(path);
 		
-		System.out.println("Redirect was correct");
-
 	}
 
 	public void destroy() {
 		try {
 			if (connection != null) {
-				
 				connection.close();
-				
 			}
 		} catch (SQLException sqle) {
-		
 		}
 	}
 }

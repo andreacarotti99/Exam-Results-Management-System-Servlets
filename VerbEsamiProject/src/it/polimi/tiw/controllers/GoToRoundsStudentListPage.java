@@ -21,6 +21,7 @@ import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 import it.polimi.tiw.beans.Round;
 import it.polimi.tiw.beans.User;
+import it.polimi.tiw.dao.ExtraInfoDAO;
 import it.polimi.tiw.dao.GeneralChecksDAO;
 import it.polimi.tiw.dao.RoundsDAO;
 import it.polimi.tiw.utils.ConnectionHandler;
@@ -47,71 +48,69 @@ public class GoToRoundsStudentListPage extends HttpServlet {
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		//the path for any type of error
+		String loginpath = request.getServletContext().getContextPath() + "/HomePage";
+		
 		//this header is to prevent the browser caching the page during logout phase
 		response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
 		
-		// If the user is not logged in (not present in session) redirect to the login
-		//String loginpath = getServletContext().getContextPath() + "/index.html";
 		HttpSession session = request.getSession();
 		
-		//se arrivo alla pagina CoursesListPage in modi "diversi" e quindi la sessione è nuova oppure se nel db non si è trovato l'utente
-		//rimanda alla pagina di login
-		/*
-		if (session.isNew() || session.getAttribute("user") == null) {
+		//no need to check the session variable 'user' because we are using filters
+		User user = (User) session.getAttribute("user");
+		
+		int classId;
+		try {
+			classId = Integer.parseInt(request.getParameter("classid"));
+		} catch (NumberFormatException | NullPointerException e) {
+			session.setAttribute("errorMessage", "Stop hacking, don't try to change parameters");
 			response.sendRedirect(loginpath);
 			return;
 		}
-		commento queste righe perchè il controllo se la sessione è nuova o se lo user non è stato trovato lo effettuo
-		nei filtri (ricordandoci che ogni servlet su cui eseguo il controllo deve essere mappata nel web.xml)
-		*/
-		//se invece non è una sessione nuova e ho lo user ottenuto correttamente
-		User user = (User) session.getAttribute("user");
-		RoundsDAO roundsDAO = new RoundsDAO(connection);
+		//creating the dao to do the checks before actually doing the real operations
 		GeneralChecksDAO generalChecksDAO = new GeneralChecksDAO(connection);
-		List<Round> rounds = new ArrayList<Round>();
-		boolean isAttendedByStudent = false;
-		
-		
-		// getting from the request the id of the clicked class from the list of classes
-		// that we passed as a parameter to the servlet in the html page ... @{/GetMissionDetails(classid=${c.classID})}
-		Integer classid = null;
+		boolean isAttendedByStudent;
 		try {
-			classid = Integer.parseInt(request.getParameter("classid"));
-		} catch (NumberFormatException | NullPointerException e) {
-			// only for debugging e.printStackTrace();
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Incorrect param values");
-			return;
-		}
-		
-
-		try {
-			//checks if the user hasn't tried to hack so for example isattendedbystudent is false when the 
-			//query doesn't have any student in it (if I edit the HTML file or through the URL I make a request for a class and the user
-			//associated doesn't attend any class with that id)
-			isAttendedByStudent = generalChecksDAO.isClassAttendedByStudent(user.getId(), classid);
+			isAttendedByStudent = generalChecksDAO.isClassAttendedByStudent(user.getId(), classId);
 			
-			//check if the provided class is in the db (is false when requesting a class not in the db)
-			
-			rounds = roundsDAO.findRoundsByStudentAndClass(user.getId(), classid);
 		} catch (SQLException e) {
-			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Not possible to recover rounds");
+			session.setAttribute("errorMessage", "Failure in database retrieving information, please try again later");
+			response.sendRedirect(loginpath);
 			return;
 		}
 		
-		//checks if the user hasn't tried to hack
-		if (isAttendedByStudent == false) {
-			String path;
-			session.setAttribute("errorMessage", "stop hacking, the classid you insered doesn't exist");
+		//checks for validity of the parameter passed in the URL
+		if (!isAttendedByStudent) {
+			session.setAttribute("errorMessage", "Stop hacking, don't try to change parameters");
+			response.sendRedirect(loginpath);
+			return;
+		}
+		
+		//real DAO to do the actual intended operation
+		RoundsDAO roundsDAO = new RoundsDAO(connection);
+		List<Round> rounds = new ArrayList<Round>();
+		ExtraInfoDAO extraInfoDAO = new ExtraInfoDAO(connection);
+		String className;
+		try {
 			
-			path = getServletContext().getContextPath() + "/HomePage";
-			response.sendRedirect(path);
+			rounds = roundsDAO.findRoundsByStudentAndClass(user.getId(), classId);
+			
+			className = extraInfoDAO.getClassName(classId);
+			
+		} catch (SQLException e) {
+			session.setAttribute("errorMessage", "Failure in database retrieving information, please try again later");
+			response.sendRedirect(loginpath);
+			return;
 		}
 
 		// Redirect to the Courses List page and add missions to the parameters
 		String path = "/WEB-INF/stud/RoundsStudentListPage.html";
 		ServletContext servletContext = getServletContext();
 		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
+		
 		ctx.setVariable("rounds", rounds);
+		ctx.setVariable("className", className);
+		
 		templateEngine.process(path, ctx, response.getWriter());
 	}
 

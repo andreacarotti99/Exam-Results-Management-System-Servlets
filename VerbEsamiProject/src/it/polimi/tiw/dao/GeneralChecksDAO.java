@@ -118,4 +118,53 @@ public class GeneralChecksDAO {
 	}
 	
 	
+	public boolean isMarkEditable(int roundId, int studentId)throws SQLException {
+		
+		String query = "SELECT * FROM registered WHERE idround = ? AND idstudent = ?";
+		
+		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
+			pstatement.setInt(1, studentId);
+			pstatement.setInt(2, roundId);
+			
+			try (ResultSet result = pstatement.executeQuery();) {
+				while(result.next()) {
+					int state = result.getInt("state");
+					
+					if (state == 0 || state == 1) {//not inserted or inserted
+						return true;
+					}
+				}
+			}
+		}
+		
+		return false;
+		
+	}
+	
+	
+	public boolean isMarkRejectable(int roundId, int studentId) throws SQLException {
+		
+		String query = "SELECT * FROM registered WHERE idround = ? AND idstudent = ?";
+		
+		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
+			pstatement.setInt(1, studentId);
+			pstatement.setInt(2, roundId);
+			
+			try (ResultSet result = pstatement.executeQuery();) {
+				while(result.next()) {
+					int mark = result.getInt("mark");
+					int state = result.getInt("state");
+					
+					if (state == 2 && mark != 1 && mark != 2 && mark != 3) {//published and not absent/failure/miss_next_round mark
+						return true;
+					}
+				}
+			}
+		}
+		
+		return false;
+		
+	}
+	
+	
 }

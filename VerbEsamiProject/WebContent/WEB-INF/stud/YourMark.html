@@ -3,7 +3,7 @@
 
 <head>
 <meta charset="ISO-8859-1">
-<title>List of Registered Students Page</title>
+<title>Your Mark Page</title>
 </head>
 
 
@@ -14,48 +14,49 @@
 	<h1>Student info Page </h1>
 	<p th:text="${'Hello ' + session.user.name + ' ' + session.user.surname + ', these are information about the selected exam: '}"></p>
 	
+	<p th:text="${'Class name: ' + roundInfo.className + ', round date: ' + roundInfo.date}"> </p>
 	
-	<div th:if="${infostudent.status.value == 0 || infostudent.status.value == 1}">	
-	<p th:text="${'The mark hasn't been published yet'}"></p>
+	<div th:if="${infoStudent.status.value == 0 || infoStudent.status.value == 1}">	
+		<p>The mark hasn't been published yet</p>
 	</div>
 	
 	
 	
 
-	<div th:if="${infostudent.status.value != 0 && infostudent.status.value != 1}">
+	<div th:if="${infoStudent.status.value != 0 && infoStudent.status.value != 1}">
 	
 
 		<hr>
-		<p th:text="'Name: ' + ${infostudent.name}"></p>
-		<p th:text="'Surname: ' + ${infostudent.surname}"></p>
-		<p th:text="'Student Number: ' + ${infostudent.studentNumber}"></p>
-		<p th:text="'Degree Course: ' + ${infostudent.degreeCourse}"></p>	
-		<p th:text="'Mail: ' + ${infostudent.mail}"></p>	
-		<p th:text="'Mark: ' + ${infostudent.mark}"></p>
-		<p th:text="'Status: ' + ${infostudent.status}"></p>
+		<p th:text="'Name: ' + ${infoStudent.name}"></p>
+		<p th:text="'Surname: ' + ${infoStudent.surname}"></p>
+		<p th:text="'Student Number: ' + ${infoStudent.studentNumber}"></p>
+		<p th:text="'Degree Course: ' + ${infoStudent.degreeCourse}"></p>	
+		<p th:text="'Mail: ' + ${infoStudent.mail}"></p>	
+		<p th:text="'Mark: ' + ${infoStudent.mark}"></p>
+		<p th:text="'Status: ' + ${infoStudent.status}"></p>
 		<hr>
 		
 	</div>
 	
 	
 	
-	<div th:if="${infostudent.status.value == 2}">
-		<div th:if="${infostudent.mark != '<empty>' && infostudent.mark != 'absent' && infostudent.mark != 'failed' && infostudent.mark != 'skip next round'}">
+	<div th:if="${infoStudent.status.value == 2}">
+		<div th:if="${infoStudent.mark != '<empty>' && infoStudent.mark != 'absent' && infoStudent.mark != 'failed' && infoStudent.mark != 'skip next round'}">
 		
-		<p th:text="${'Mark published, press discard button to discard the mark'}"></p>
-		<td> <a th:href="@{/DiscardMark(roundid=${infostudent.roundID} )}"> <button type="button"> Reject Mark </button> </a> </td>
+		<p>Mark published, press reject button to reject the mark</p>
+		<p> <a th:href="@{/DiscardMark(roundId=${infoStudent.roundID})}"> <button type="button"> Reject Mark </button> </a> </p>
 		
 		</div>
 	</div>
 	
 	
-	<div th:if="${infostudent.status.value == 3}">
-		<p th:text="${'The mark was rejected'}"></p>
+	<div th:if="${infoStudent.status.value == 3}">
+		<p>The mark was rejected</p>
 	</div>
 	
 	
-	<div th:if="${infostudent.status.value == 4}">
-		<p th:text="${'The mark has been recorded'}"></p>
+	<div th:if="${infoStudent.status.value == 4}">
+		<p>The mark has been recorded</p>
 	</div>
 
 

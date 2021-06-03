@@ -15,23 +15,25 @@
 	<p th:text="${'Hello ' + session.user.name + ' ' + session.user.surname + ', you are a professor'}"></p>
 	<p th:text="'List of rounds in descending order for class: ' + ${className}"></p>
 	
+	<div th:if="${rounds.size() != 0}">
+		<table>
+			<thead>
+				<tr>
+					<th>Dates of the round</th>
+					
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="r : ${rounds}">
+					<td th:text="${r.date}"></td>
+					<td> <a th:href="@{/GoToRegisteredToRoundPage(roundId=${r.roundID},lastClicked=1)}"> Round Details </a> </td>
+					
+					
+				</tr>
+			</tbody>
+		</table>
+	</div>
 	
-	<table>
-		<thead>
-			<tr>
-				<th>Dates of the round</th>
-				
-			</tr>
-		</thead>
-		<tbody>
-			<tr th:each="r : ${rounds}">
-				<td th:text="${r.date}"></td>
-				<td> <a th:href="@{/GoToRegisteredToRoundPage(roundId=${r.roundID},lastClicked=1)}"> Round Details </a> </td>
-				
-				
-			</tr>
-		</tbody>
-	</table>
 	
 	<p th:if="${rounds.size() == 0}">You have no rounds for this class</p>
 	
