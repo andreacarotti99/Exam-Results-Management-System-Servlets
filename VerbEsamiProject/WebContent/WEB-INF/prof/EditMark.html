@@ -9,7 +9,9 @@
 
 <body>
 
-	<a href="HomePage">logout</a>
+	<div align="right">
+		<a href="Logout">Logout</a>
+	</div>
 	
 	<h1>Student info Page </h1>
 	<p th:text="${'Hello ' + session.user.name + ' ' + session.user.surname + ', these are the round information about the selected student:'}"></p>

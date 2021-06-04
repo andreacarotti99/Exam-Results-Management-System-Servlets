@@ -55,10 +55,7 @@ public class VerbalizeMark extends HttpServlet {
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		//the path for any type of error
-		String loginpath = request.getServletContext().getContextPath() + "/HomePage";
-				
-		//this header is to prevent the browser caching the page during logout phase
-		response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+		String loginpath = request.getServletContext().getContextPath() + "/Logout";
 				
 		HttpSession session = request.getSession();
 		

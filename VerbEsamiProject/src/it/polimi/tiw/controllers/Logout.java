@@ -16,13 +16,13 @@ import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 
-@WebServlet("/HomePage")
-public class HomePage extends HttpServlet {
+@WebServlet("/Logout")
+public class Logout extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private TemplateEngine templateEngine;
        
     
-    public HomePage() {
+    public Logout() {
         super();
     }
     
@@ -38,23 +38,23 @@ public class HomePage extends HttpServlet {
 
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		//this header is to prevent the browser caching the page during logout phase
-		response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
 		
-		HttpSession session = request.getSession();
+		HttpSession session = request.getSession(false);
 		
 		String path = "/WEB-INF/index.html";
 		ServletContext servletContext = getServletContext();
 		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
 		
-		//printing custom message in the login/index page, usually used when error occurred
-		if(session.getAttribute("errorMessage") != null) {
-			ctx.setVariable("errorMsg", session.getAttribute("errorMessage"));
-			session.removeAttribute("errorMessage");
+		if (session != null) {
+			//printing custom message in the login/index page, usually used when error occurred
+			if(session.getAttribute("errorMessage") != null) {
+				ctx.setVariable("errorMsg", session.getAttribute("errorMessage"));
+				session.removeAttribute("errorMessage");
+			}
+			
+			//removing all possible saved objects in the session
+			session.invalidate();
 		}
-		
-		//removing the two possible objects saved in the session
-		session.invalidate();
 		
 		templateEngine.process(path,  ctx, response.getWriter());
 	}

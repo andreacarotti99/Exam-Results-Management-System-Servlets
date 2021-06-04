@@ -47,17 +47,12 @@ public class GoToClassesStudentListPage extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		//the path for any type of error
-		String loginpath = request.getServletContext().getContextPath() + "/HomePage";
-		
-		//this header is to prevent the browser caching the page during logout phase
-		response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+		String loginpath = request.getServletContext().getContextPath() + "/Logout";
 		
 		HttpSession session = request.getSession();
 		
 		//no need to check the session variable 'user' because we are using filters
 		User user = (User) session.getAttribute("user");
-
-		
 		
 		
 		ClassesDAO classesDAO = new ClassesDAO(connection);

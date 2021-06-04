@@ -19,6 +19,10 @@
   </context-param>
   
   <filter>
+  	<filter-name>NoCache</filter-name>
+  	<filter-class>it.polimi.tiw.filters.NoCache</filter-class>
+  </filter>
+  <filter>
   	<filter-name>CheckSessionLogin</filter-name>
   	<filter-class>it.polimi.tiw.filters.CheckSessionLogin</filter-class>
   </filter>
@@ -30,6 +34,29 @@
   	<filter-name>StudentFilter</filter-name>
   	<filter-class>it.polimi.tiw.filters.StudentFilter</filter-class>
   </filter>
+  
+  <filter-mapping>
+  	<filter-name>NoCache</filter-name>
+  	<url-pattern>/Logout</url-pattern>
+  	<url-pattern>/CheckLogin</url-pattern>
+  	<url-pattern>/DiscardMark</url-pattern>
+  	<url-pattern>/EditMark</url-pattern>
+  	<url-pattern>/GoToClassesProfessorListPage</url-pattern>
+  	<url-pattern>/GoToClassesStudentListPage</url-pattern>
+  	<url-pattern>/GoToEditMarkPage</url-pattern>
+  	<url-pattern>/GoToRegisteredToRoundPage</url-pattern>
+  	<url-pattern>/GoToRoundsProfessorListPage</url-pattern>
+  	<url-pattern>/GoToRoundsStudentListPage</url-pattern>
+  	<url-pattern>/GoToVerbalPage</url-pattern>
+  	<url-pattern>/GoToVisualizeYourMarkStudentPage</url-pattern>
+  	<url-pattern>/PublishMarks</url-pattern>
+  	<url-pattern>/VerbalizeMarks</url-pattern>
+  	<url-pattern>/RegisterToRound</url-pattern>
+  	<dispatcher>REQUEST</dispatcher>
+  	<dispatcher>FORWARD</dispatcher>
+  </filter-mapping>
+  
+  
   
   <filter-mapping>
   	<filter-name>CheckSessionLogin</filter-name>
@@ -76,6 +103,6 @@
   </filter-mapping>
   
   <welcome-file-list>
-    <welcome-file>HomePage</welcome-file>
+    <welcome-file>Logout</welcome-file>
   </welcome-file-list>
 </web-app>

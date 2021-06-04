@@ -9,7 +9,9 @@
 
 <body>
 
-	<a href="HomePage">logout</a>
+	<div align="right">
+		<a href="Logout">Logout</a>
+	</div>
 	
 	<h1>Welcome to the List of Registered students of the round </h1>
 	<p th:text="${'Hello ' + session.user.name + ' ' + session.user.surname + ', you are a professor, here you can see the verbal of the selected round'}"></p>

@@ -43,7 +43,7 @@ public class StudentFilter implements Filter {
 		
 		HttpServletRequest req = (HttpServletRequest) request;
 		HttpServletResponse res = (HttpServletResponse) response;
-		String loginpath = req.getServletContext().getContextPath() + "/HomePage";
+		String loginpath = req.getServletContext().getContextPath() + "/Logout";
 		
 		HttpSession s = req.getSession();
 		User u = null;
