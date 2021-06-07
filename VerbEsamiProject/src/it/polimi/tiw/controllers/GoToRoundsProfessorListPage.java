@@ -61,7 +61,7 @@ public class GoToRoundsProfessorListPage extends HttpServlet {
 		User user = (User) session.getAttribute("user");
 		
 		// getting from the request the id of the clicked class from the list of classes
-		// that we passed as a parameter to the servlet in the html page ... @{/GetMissionDetails(classid=${c.classID})}
+		// that we passed as a parameter to the servlet in the html page ... @{/GoToRoundsProfessorListPage(classid=${c.classID})}
 		int classId;
 		try {
 			classId = Integer.parseInt(request.getParameter("classId"));
