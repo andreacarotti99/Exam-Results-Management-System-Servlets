@@ -4,6 +4,7 @@
 <head>
 <meta charset="ISO-8859-1">
 <title>List of Registered Students Page</title>
+<link rel="stylesheet" type="text/css" media="all" href="CSS/style.css" />
 </head>
 
 
@@ -20,34 +21,34 @@
 	<p> List of students: </p>
 
 	<div th:if="${registeredStudents.size() != 0}">
-		<table>
+		<table class="boxed">
 			<thead>
 				<tr>
-					<th><a th:href="@{/GoToRegisteredToRoundPage(roundId=${roundInfo.roundId},lastClicked=1)}">studentNumber</a></th>
+					<th class="boxed"><a th:href="@{/GoToRegisteredToRoundPage(roundId=${roundInfo.roundId},lastClicked=1)}">studentNumber</a></th>
 					
-					<th><a th:href="@{/GoToRegisteredToRoundPage(roundId=${roundInfo.roundId},lastClicked=2)}">Surname</a></th>
+					<th class="boxed"><a th:href="@{/GoToRegisteredToRoundPage(roundId=${roundInfo.roundId},lastClicked=2)}">Surname</a></th>
 					
-					<th><a th:href="@{/GoToRegisteredToRoundPage(roundId=${roundInfo.roundId},lastClicked=3)}">Name</a></th>
+					<th class="boxed"><a th:href="@{/GoToRegisteredToRoundPage(roundId=${roundInfo.roundId},lastClicked=3)}">Name</a></th>
 					
-					<th><a th:href="@{/GoToRegisteredToRoundPage(roundId=${roundInfo.roundId},lastClicked=4)}">Email</a></th>
+					<th class="boxed"><a th:href="@{/GoToRegisteredToRoundPage(roundId=${roundInfo.roundId},lastClicked=4)}">Email</a></th>
 					
-					<th><a th:href="@{/GoToRegisteredToRoundPage(roundId=${roundInfo.roundId},lastClicked=5)}">Degree Course</a></th>
+					<th class="boxed"><a th:href="@{/GoToRegisteredToRoundPage(roundId=${roundInfo.roundId},lastClicked=5)}">Degree Course</a></th>
 					
-					<th><a th:href="@{/GoToRegisteredToRoundPage(roundId=${roundInfo.roundId},lastClicked=6)}">Mark</a></th>
+					<th class="boxed"><a th:href="@{/GoToRegisteredToRoundPage(roundId=${roundInfo.roundId},lastClicked=6)}">Mark</a></th>
 					
-					<th><a th:href="@{/GoToRegisteredToRoundPage(roundId=${roundInfo.roundId},lastClicked=7)}">Status</a></th>
+					<th class="boxed"><a th:href="@{/GoToRegisteredToRoundPage(roundId=${roundInfo.roundId},lastClicked=7)}">Status</a></th>
 									
 				</tr>
 			</thead>
 			<tbody>
 				<tr th:each="r : ${registeredStudents}">
-					<td th:text="${r.studentNumber}"></td>
-					<td th:text="${r.surname}"></td>
-					<td th:text="${r.name}"></td>
-					<td th:text="${r.mail}"></td>
-					<td th:text="${r.degreeCourse}"></td>
-					<td th:text="${r.mark}"></td>
-					<td th:text="${r.status}"></td>
+					<td class="boxed" th:text="${r.studentNumber}"></td>
+					<td class="boxed" th:text="${r.surname}"></td>
+					<td class="boxed" th:text="${r.name}"></td>
+					<td class="boxed" th:text="${r.mail}"></td>
+					<td class="boxed" th:text="${r.degreeCourse}"></td>
+					<td class="boxed" th:text="${r.mark}"></td>
+					<td class="boxed" th:text="${r.status}"></td>
 					
 					<td th:if="${r.status.getValue == 0 || r.status.getValue == 1}"> <a th:href="@{/GoToEditMarkPage(studentId=${r.id},roundId=${roundInfo.roundId})}"> <button type="button"> Edit Mark </button> </a> </td>														
 					

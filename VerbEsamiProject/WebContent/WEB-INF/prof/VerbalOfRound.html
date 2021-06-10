@@ -4,6 +4,7 @@
 <head>
 <meta charset="ISO-8859-1">
 <title>Verbal Page</title>
+<link rel="stylesheet" type="text/css" media="all" href="CSS/style.css" />
 </head>
 
 
@@ -20,22 +21,22 @@
 	<h1 th:text="${'Class name: ' + round.className + ', round date: ' + round.date + ', verbal id: ' + verbal.verbalID + ', verbalization time: ' + verbal.date}"></h1>
 	
 
-	<table>
+	<table class="boxed">
 		<thead>
 			<tr>
-				<th>Student Number</th>
-				<th>Surname</th>
-				<th>Name</th>
-				<th>Mark</th>
+				<th class="boxed">Student Number</th>
+				<th class="boxed">Surname</th>
+				<th class="boxed">Name</th>
+				<th class="boxed">Mark</th>
 
 			</tr>
 		</thead>
 		<tbody>
 			<tr th:each="r : ${registeredStudents}">
-				<td th:text="${r.studentNumber}"></td>
-				<td th:text="${r.surname}"></td>
-				<td th:text="${r.name}"></td>
-				<td th:text="${r.mark}"></td>			
+				<td class="boxed" th:text="${r.studentNumber}"></td>
+				<td class="boxed" th:text="${r.surname}"></td>
+				<td class="boxed" th:text="${r.name}"></td>
+				<td class="boxed" th:text="${r.mark}"></td>			
 			</tr>
 		</tbody>
 	</table>
