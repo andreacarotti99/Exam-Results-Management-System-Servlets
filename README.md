@@ -1,2 +1,4 @@
-# Tecnologie informatiche per il Web
-Progetto per il corso tecnologie informatiche per il web @ Politecnico di Milano.
+# TIW - Exam Verbalization Website - Java
+Project for the course "Information Technologies for the Web" @ Politecnico di Milano.
+
+### Java Version
