@@ -51,9 +51,15 @@ This workflow ensures efficient management of exam results, enhancing transparen
 ### Packages and Classes
 
 - `it.polimi.tiw.beans`: Contains the JavaBeans used to encapsulate the various types of data manipulated by the application.
-  - `MarkConversion`: Handles the conversion of numeric marks to their string representations and vice versa.
-  - `MarkStatus`: An enumeration defining the possible states of an exam mark (not inserted, inserted, published, rejected, recorded).
-  - `SavedOrder`: Manages the ordering of displayed data based on user interactions.
+  - `MarkConversion`: Converts numeric marks to their string equivalents and vice versa.
+  - `MarkStatus`: Enumerates the possible states of an exam mark (not inserted, inserted, published, rejected, recorded).
+  - `SavedOrder`: Tracks and manages the order of data displayed based on user interactions.
+  - `Classe`: Represents the details of an academic class or course, including its identifier and name.
+  - `RegisteredStudent`: Holds information about students registered for an exam, including personal details, course, and exam status.
+  - `Round`: Details an exam session or round, including its date and associated class.
+  - `User`: Represents a user of the system, storing personal details, role, and authentication information.
+  - `Verbal`: Records the details of an exam verbalization process, including its identifier and timestamp.
+
 
 - `it.polimi.tiw.controllers`: Manages the application's workflow by handling HTTP requests and responses.
   - Servlets like `GoToClassesProfessorListPage` and `GoToRegisteredToRoundPage` direct the flow of the application and render the appropriate views using Thymeleaf templates.
