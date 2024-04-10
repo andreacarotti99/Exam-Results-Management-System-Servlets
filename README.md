@@ -100,6 +100,31 @@ This workflow ensures efficient management of exam results, enhancing transparen
 - `it.polimi.tiw.utils`: Contains utility classes.
   - `ConnectionHandler`: Manages the database connection lifecycle.
 
+## Web Interface
+
+The web interface of the system is structured into HTML files, categorized under different directories for professors (`prof`) and students (`stud`), to support their respective functionalities.
+
+### Common Pages
+
+- **Login (`login.html`)**: Entry point for users, providing a form for username and password input to authenticate and direct them to the appropriate portal.
+
+### Professor Pages (`prof` directory)
+
+- **Classes List (`ClassesProfessorListPage.html`)**: Displays the courses taught by the professor, allowing navigation to course-specific exam rounds.
+- **Edit Mark (`EditMark.html`)**: Facilitates mark editing for students in a specific exam round, offering options to update exam results.
+- **Registered Students List (`RegisteredToRound.html`)**: Shows students enrolled in an exam round, with options to edit, publish, and record marks.
+- **Rounds List (`RoundsProfessorListPage.html`)**: Lists all exam rounds for a class, enabling the professor to manage each round's results.
+- **Verbalization (`VerbalOfRound.html`)**: Allows viewing and finalizing the verbalization process for an exam round, showing a record of finalized student marks.
+
+### Student Pages (`stud` directory)
+
+- **Classes List (`ClassesStudentListPage.html`)**: Shows the classes a student is enrolled in, with options to view or register for exam rounds.
+- **Rounds List (`RoundsStudentListPage.html`)**: Displays the available exam rounds for a class, with functionality to register or view individual exam results.
+- **Exam Result (`YourMark.html`)**: Details the student's mark for an exam round, with options to accept or reject the published mark.
+
+These HTML pages utilize Thymeleaf templates to dynamically render content based on the application's state and user interactions, ensuring a responsive and intuitive user experience.
+
+
 ### Security and Data Integrity
 
 - **Role-Based Access Control (RBAC)**: The application implements RBAC through filters (`ProfessorFilter`, `StudentFilter`) ensuring users can only access functionalities pertinent to their roles.
