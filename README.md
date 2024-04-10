@@ -79,8 +79,16 @@ This workflow ensures efficient management of exam results, enhancing transparen
   - `VerbalizeMark`: Provides functionality for professors to verbalize marks, finalizing them in the system.
 
 
-- `it.polimi.tiw.dao`: Responsible for data access operations, providing a layer of abstraction between the application logic and the database.
-  - Classes like `GeneralChecksDAO`, `VerbalizationDAO`, and `EditMarkDAO` encapsulate the SQL queries and transactions.
+- `it.polimi.tiw.dao`: Provides data access objects (DAOs) for interacting with the database.
+  - `ClassesDAO`: Handles database operations related to classes, such as finding classes by professor or student ID.
+  - `EditMarkDAO`: Manages the editing, publishing, and rejection of student marks in the database.
+  - `ExtraInfoDAO`: Retrieves additional information, like class names, round details, and verbal information, from the database.
+  - `GeneralChecksDAO`: Performs various checks, such as verifying if a class is taught by a professor or if a student is registered for a round.
+  - `RegisteredStudentsDAO`: Deals with operations related to students registered for rounds, including ordering, retrieving, and registering students.
+  - `RoundsDAO`: Manages database interactions related to exam rounds, including finding rounds by class or student.
+  - `UserDAO`: Handles user authentication and retrieval of user details from the database.
+  - `VerbalizationDAO`: Manages the creation of verbals and updates related to the verbalization process.
+
 
 - `it.polimi.tiw.filters`: Implements Servlet Filters to enforce security and session management.
   - `NoCache`: Prevents browser caching to secure sensitive data.
