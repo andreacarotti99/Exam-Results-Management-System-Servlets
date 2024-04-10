@@ -62,7 +62,22 @@ This workflow ensures efficient management of exam results, enhancing transparen
 
 
 - `it.polimi.tiw.controllers`: Manages the application's workflow by handling HTTP requests and responses.
-  - Servlets like `GoToClassesProfessorListPage` and `GoToRegisteredToRoundPage` direct the flow of the application and render the appropriate views using Thymeleaf templates.
+  - `CheckLogin`: Authenticates users and redirects them to the appropriate page based on their role.
+  - `DiscardMark`: Allows students to discard a mark and updates the database accordingly.
+  - `EditMark`: Enables professors to edit or enter marks for students in their courses.
+  - `GoToClassesProfessorListPage`: Displays the list of classes for professors.
+  - `GoToClassesStudentListPage`: Shows the list of classes for students.
+  - `GoToEditMarkPage`: Directs professors to the page where they can edit marks for students.
+  - `GoToRegisteredToRoundPage`: Shows a list of students registered for a particular exam round.
+  - `GoToRoundsProfessorListPage`: Lists the exam rounds for a class, accessible by professors.
+  - `GoToRoundsStudentListPage`: Lists the exam rounds for a class that a student is enrolled in.
+  - `GoToVerbalPage`: Directs professors to a page where they can verbalize marks for an exam round.
+  - `GoToVisualizeYourMarkStudentPage`: Allows students to view their marks for an exam round.
+  - `Logout`: Handles the logout process and invalidates the session.
+  - `PublishMarks`: Enables professors to publish marks for students, making them official.
+  - `RegisterToRound`: Allows students to register for an exam round.
+  - `VerbalizeMark`: Provides functionality for professors to verbalize marks, finalizing them in the system.
+
 
 - `it.polimi.tiw.dao`: Responsible for data access operations, providing a layer of abstraction between the application logic and the database.
   - Classes like `GeneralChecksDAO`, `VerbalizationDAO`, and `EditMarkDAO` encapsulate the SQL queries and transactions.
