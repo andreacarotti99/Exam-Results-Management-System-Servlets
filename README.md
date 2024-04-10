@@ -90,10 +90,12 @@ This workflow ensures efficient management of exam results, enhancing transparen
   - `VerbalizationDAO`: Manages the creation of verbals and updates related to the verbalization process.
 
 
-- `it.polimi.tiw.filters`: Implements Servlet Filters to enforce security and session management.
-  - `NoCache`: Prevents browser caching to secure sensitive data.
-  - `ProfessorFilter` and `StudentFilter`: Ensure that users access only the functionalities available to their roles.
-  - `CheckSessionLogin`: Checks whether the user session is valid to prevent unauthorized access.
+- `it.polimi.tiw.filters`: Contains servlet filters for request processing and access control.
+  - `CheckSessionLogin`: Ensures that a user is logged in before allowing access to protected resources. Redirects to the login page if the user is not authenticated.
+  - `NoCache`: Prevents caching of sensitive data by setting appropriate HTTP headers to disable caching in the browser.
+  - `ProfessorFilter`: Restricts access to professor-only resources. If a non-professor user attempts to access these resources, they are redirected and logged out.
+  - `StudentFilter`: Restricts access to student-only resources. If a professor or unauthorized user attempts to access these resources, they are redirected and logged out.
+
 
 - `it.polimi.tiw.utils`: Contains utility classes.
   - `ConnectionHandler`: Manages the database connection lifecycle.
